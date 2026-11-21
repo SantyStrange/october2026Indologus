@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>RRB CBT -OCTOBER Current Affairs</title>
+<style>
+    :root {
+        --bg-color: #121212;
+        --surface-color: #1e1e1e;
+        --primary-cyan: #369BFF;
+        --primary-blue: #2979ff;
+        --text-primary: #ffffff;
+        --text-secondary: #b3b3b3;
+        --border-color: #333333;
+        
+        --color-not-visited: #9e9e9e;
+        --color-not-answered: #f44336;
+        --color-answered: #4caf50;
+        --color-marked: #9c27b0;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    
+    /* 100dvh prevents mobile browser URL bars from hiding the bottom elements */
+    body { background-color: var(--bg-color); color: var(--text-primary); height: 100vh; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
+    
+    /* Views */
+    .view { display: none; flex-direction: column; height: 100%; overflow: hidden; }
+    .view.active { display: flex; }
+    
+    /* Landing Page */
+    .landing-container { max-width: 800px; margin: auto; padding: 40px 20px; text-align: center; overflow-y: auto; }
+    .landing-container h1 { color: var(--primary-cyan); font-size: 2rem; margin-bottom: 20px; }
+    .instructions { background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 10px; padding: 25px; text-align: left; margin-bottom: 30px; line-height: 1.6; }
+    .instructions h3 { color: var(--primary-cyan); margin-bottom: 15px; }
+    .instructions ul { margin-left: 20px; }
+    .start-btn { background: var(--primary-blue); color: #fff; border: none; padding: 15px 30px; font-size: 1.2rem; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.2s; text-transform: uppercase; }
+    .start-btn:hover { background: #1565c0; transform: scale(1.05); }
+
+    /* Header */
+    .header { background-color: var(--surface-color); border-bottom: 2px solid var(--primary-cyan); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 50; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+    .header h1 { font-size: 1.2rem; font-weight: 600; color: var(--primary-cyan); }
+    .timer-container { font-size: 1.2rem; font-weight: bold; background: #2a2a2a; padding: 5px 15px; border-radius: 5px; border: 1px solid var(--primary-blue); }
+    
+    /* Mobile Top Bar (Toggle Palette & Submit) */
+    .mobile-top-bar { display: none; width: 100%; flex-shrink: 0; z-index: 40; border-bottom: 1px solid var(--border-color); }
+    .mobile-top-bar button { flex: 1; padding: 12px; border: none; font-weight: bold; font-size: 0.95rem; cursor: pointer; text-transform: uppercase; }
+    .btn-toggle-top { background: #2a2a2a; color: var(--primary-cyan); border-right: 1px solid var(--border-color) !important; }
+    .btn-submit-top { background: var(--color-answered); color: #fff; }
+
+    /* Main Layout */
+    .main-container { display: flex; flex: 1; overflow: hidden; position: relative; }
+    
+    /* Quiz Left Panel */
+    .quiz-left-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    
+    /* Question Scrolling Area */
+    .question-scroll-area { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 40px; }
+    .q-header { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; font-size: 1.1rem; color: var(--primary-cyan); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+    .question-text { font-size: 1.1rem; line-height: 1.6; margin-bottom: 15px; }
+    .question-tamil { font-size: 1.1rem; line-height: 1.6; color: var(--primary-cyan); margin-bottom: 25px; }
+    
+    .options-list { display: flex; flex-direction: column; gap: 12px; }
+    .option-label { display: flex; align-items: center; padding: 12px 15px; background: #2a2a2a; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; transition: 0.2s; }
+    .option-label:hover { border-color: var(--primary-cyan); background: #333; }
+    .option-label input { margin-right: 15px; transform: scale(1.2); accent-color: var(--primary-cyan); }
+    
+    /* Pinned Action Buttons Footer */
+    .action-buttons { flex-shrink: 0; display: flex; flex-wrap: wrap; gap: 10px; padding: 15px 20px; background: var(--surface-color); border-top: 1px solid var(--border-color); z-index: 10; box-shadow: 0 -4px 10px rgba(0,0,0,0.3); }
+    .btn { padding: 10px 15px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.2s; color: #fff; text-transform: uppercase; font-size: 0.85rem; display: flex; justify-content: center; align-items: center; text-align: center; }
+    .btn-prev { background: #424242; }
+    .btn-prev:hover { background: #616161; }
+    .btn-clear { background: #f44336; }
+    .btn-clear:hover { background: #d32f2f; }
+    .btn-mark { background: var(--color-marked); }
+    .btn-mark:hover { background: #7b1fa2; }
+    .btn-save { background: var(--primary-blue); margin-left: auto; }
+    .btn-save:hover { background: #1565c0; }
+
+    /* Palette Section */
+    .palette-section { width: 320px; background: var(--surface-color); border-left: 1px solid var(--border-color); display: flex; flex-direction: column; transition: transform 0.3s ease; flex-shrink: 0; }
+    .palette-header { padding: 15px; border-bottom: 1px solid var(--border-color); font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+    .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; padding: 15px; overflow-y: auto; }
+    .q-bubble { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.9rem; color: #fff; background: var(--color-not-visited); border: 2px solid transparent; }
+    .q-bubble.active { border-color: var(--primary-cyan); transform: scale(1.1); box-shadow: 0 0 8px var(--primary-cyan); }
+    
+    .status-0 { background: var(--color-not-visited); color: #000; } 
+    .status-1 { background: var(--color-not-answered); } 
+    .status-2 { background: var(--color-answered); } 
+    .status-3 { background: var(--color-marked); } 
+    .status-4 { background: var(--color-marked); position: relative; } 
+    .status-4::after { content: ''; position: absolute; bottom: 2px; right: 2px; width: 8px; height: 8px; background: var(--color-answered); border-radius: 50%; border: 1px solid #fff; }
+
+    .legend { padding: 15px; font-size: 0.8rem; border-top: 1px solid var(--border-color); display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .legend-box { width: 15px; height: 15px; border-radius: 3px; }
+    .btn-submit-desktop { background: var(--color-answered); width: 100%; padding: 12px; }
+
+    /* Custom Modals (No native alerts) */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
+    .modal-content { background: var(--surface-color); padding: 30px; border-radius: 10px; width: 100%; max-width: 500px; border: 1px solid var(--border-color); text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+    .modal-content h2 { color: var(--primary-cyan); margin-bottom: 20px; }
+    .modal-actions { display: flex; justify-content: center; gap: 15px; margin-top: 25px; }
+    
+    /* Results View */
+    .results-container { max-width: 900px; margin: auto; padding: 40px 20px; text-align: center; overflow-y: auto; width: 100%; }
+    .result-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 30px 0; }
+    .stat-box { background: #2a2a2a; padding: 20px; border-radius: 8px; border-bottom: 4px solid #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .stat-box.st-score { border-color: var(--primary-cyan); grid-column: span 2; }
+    .stat-box.st-correct { border-color: var(--color-answered); }
+    .stat-box.st-wrong { border-color: var(--color-not-answered); }
+    .stat-box h3 { font-size: 2.5rem; margin-bottom: 5px; }
+    .stat-box.st-score h3 { font-size: 3.5rem; color: var(--primary-cyan); }
+    
+    /* Tabbed Review Section */
+    #detailed-review-section { display: none; margin-top: 40px; }
+    .review-tabs { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
+    .tab-btn { background: #2a2a2a; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 12px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; flex: 1; min-width: 110px; text-align: center; transition: 0.2s; }
+    .tab-btn:hover { background: #333; }
+    .tab-btn.active { color: #fff; border-bottom: 3px solid; }
+    .tab-btn[data-tab="correct"].active { border-color: var(--color-answered); background: rgba(76, 175, 80, 0.1); }
+    .tab-btn[data-tab="wrong"].active { border-color: var(--color-not-answered); background: rgba(244, 67, 54, 0.1); }
+    .tab-btn[data-tab="unattempted"].active { border-color: var(--color-not-visited); background: rgba(158, 158, 158, 0.1); }
+    
+    .tab-content { display: none; text-align: left; }
+    .tab-content.active { display: block; }
+    
+    .review-item { padding: 20px; background: #2a2a2a; margin-bottom: 15px; border-radius: 8px; border-left: 5px solid var(--border-color); }
+    .review-item.correct { border-left-color: var(--color-answered); }
+    .review-item.wrong { border-left-color: var(--color-not-answered); }
+    .review-item.unattempted { border-left-color: var(--color-not-visited); }
+    
+    .answer-tag { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; margin-top: 10px; }
+    .tag-correct { background: rgba(76, 175, 80, 0.2); color: #81c784; border: 1px solid #4caf50; }
+    .tag-wrong { background: rgba(244, 67, 54, 0.2); color: #e57373; border: 1px solid #f44336; }
+    .tag-unattempted { background: rgba(158, 158, 158, 0.2); color: #e0e0e0; border: 1px solid #9e9e9e; }
+    
+    .explanation-box { margin-top: 12px; padding: 12px; background: #1e1e1e; border-radius: 5px; border-left: 3px solid var(--primary-cyan); font-size: 0.95rem; line-height: 1.5; color: #ddd; }
+
+    /* MOBILE SPECIFIC OVERRIDES */
+    @media (max-width: 768px) {
+        .mobile-top-bar { display: flex; }
+        .palette-section { position: absolute; top: 0; right: 0; height: 100%; transform: translateX(100%); z-index: 100; box-shadow: -5px 0 15px rgba(0,0,0,0.5); }
+        .palette-section.open { transform: translateX(0); }
+        
+        .result-grid { grid-template-columns: 1fr; }
+        .stat-box.st-score { grid-column: span 1; }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 10px;
+            padding-bottom: max(10px, env(safe-area-inset-bottom));
+        }
+        .btn-save { grid-column: span 2; margin-left: 0; padding: 15px; font-size: 1.1rem; order: 1; }
+        .btn-mark { order: 2; padding: 12px; }
+        .btn-clear { order: 3; padding: 12px; }
+        .btn-prev { grid-column: span 2; order: 4; padding: 12px; }
+    }
+</style>
+</head>
+<body>
+
+<!-- VIEW 1: Landing Page -->
+<div id="view-landing" class="view active">
+    <div class="landing-container">
+        <h1>RRB CBT: OCTOBER CA 2026</h1>
+        <div class="instructions">
+            <h3>📝 Instructions:</h3>
+            <ul>
+                <li><strong>Total Questions:</strong> 100 (Bilingual: English & Tamil).</li>
+                <li><strong>Time Allotted:</strong> 30 Minutes.</li>
+                <li><strong>Marking Scheme:</strong> +1 mark for correct answers, <strong>-0.33 marks</strong> for incorrect answers.</li>
+                <li>Questions are shuffled automatically for every attempt.</li>
+                <li>Use the Question Palette to navigate. You can Mark questions for review.</li>
+                <li>Ensure you have a stable connection. Do not refresh the page during the exam.</li>
+            </ul>
+        </div>
+        <button class="start-btn" onclick="startQuiz()">I am ready to begin</button>
+    </div>
+</div>
+
+<!-- VIEW 2: Main Quiz -->
+<div id="view-quiz" class="view">
+    
+    <div class="header">
+        <h1>CA OCT - 2026</h1>
+        <div class="timer-container" id="timer">30:00</div>
+    </div>
+
+    <!-- Mobile Explicit Top Bar -->
+    <div class="mobile-top-bar">
+        <button class="btn-toggle-top" onclick="togglePalette()">☰ Question Palette</button>
+        <button class="btn-submit-top" onclick="showSubmitConfirm()">Submit Exam</button>
+    </div>
+
+    <div class="main-container">
+        
+        <!-- Question Panel (Scrollable content + Fixed Footer) -->
+        <div class="quiz-left-panel">
+            
+            <div class="question-scroll-area">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--text-secondary); font-size: 0.9rem;">Negative Marks: -0.33</span>
+                </div>
+                
+                <div class="question-text" id="q-text-en">Loading...</div>
+                <div class="question-tamil" id="q-text-ta">ஏற்றுகிறது...</div>
+                
+                <div class="options-list" id="options-container"></div>
+            </div>
+            
+            <!-- Fixed Action Buttons Footer -->
+            <div class="action-buttons">
+                <button class="btn btn-save" onclick="saveAndNext()">Save & Next ►</button>
+                <button class="btn btn-mark" onclick="markAndNext()">Mark & Next</button>
+                <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                <button class="btn btn-prev" onclick="prevQuestion()">◄ Previous</button>
+            </div>
+            
+        </div>
+        
+        <!-- Collapsible Palette -->
+        <div class="palette-section" id="palette">
+            <div class="palette-header">
+                <span>Question Palette</span>
+                <button onclick="togglePalette()" class="btn btn-prev" style="padding: 5px; display: none;" id="close-palette-btn">X</button>
+            </div>
+            <div class="palette-grid" id="palette-grid"></div>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-box status-2"></div> Answered</div>
+                <div class="legend-item"><div class="legend-box status-1"></div> Not Answered</div>
+                <div class="legend-item"><div class="legend-box status-0"></div> Not Visited</div>
+                <div class="legend-item"><div class="legend-box status-3"></div> Marked</div>
+                <div class="legend-item"><div class="legend-box status-4"></div> Ans & Marked</div>
+            </div>
+            <div style="padding: 15px;">
+                <button class="btn btn-submit btn-submit-desktop" onclick="showSubmitConfirm()">SUBMIT EXAM</button>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<!-- Custom Confirmation Modal -->
+<div class="modal-overlay" id="confirm-modal">
+    <div class="modal-content">
+        <h2>Submit Exam?</h2>
+        <p>Are you sure you want to submit? You will not be able to change your answers.</p>
+        <p id="unanswered-warning" style="color: var(--color-not-answered); margin-top: 10px; font-weight: bold; display: none;"></p>
+        <div class="modal-actions">
+            <button class="btn btn-prev" onclick="closeSubmitConfirm()">No, Go Back</button>
+            <button class="btn btn-submit" style="width: auto; margin-top: 0; padding: 10px 20px;" onclick="submitExam()">Yes, Submit</button>
+        </div>
+    </div>
+</div>
+
+<!-- VIEW 3: Results & Review -->
+<div id="view-results" class="view">
+    <div class="results-container">
+        <h1 style="color: var(--primary-cyan); font-size: 2.2rem; margin-bottom: 20px;">Exam Submitted Successfully</h1>
+        
+        <div class="result-grid">
+            <div class="stat-box st-score">
+                <div>Final Score</div>
+                <h3 id="res-score">0.00</h3>
+                <div style="color: var(--text-secondary); font-size: 0.9rem;" id="out-of-text">(Out of 100)</div>
+            </div>
+            <div class="stat-box st-correct">
+                <h3 id="res-correct">0</h3>
+                <div>Correct</div>
+            </div>
+            <div class="stat-box st-wrong">
+                <h3 id="res-wrong">0</h3>
+                <div>Incorrect</div>
+            </div>
+        </div>
+        
+        <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 25px;">Unattempted Questions: <strong id="res-unattempted" style="color: #fff;">0</strong></p>
+        
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;" id="post-exam-actions">
+            <button class="btn btn-save" onclick="showDetailedReview()">View Detailed Review</button>
+            <button class="btn btn-prev" onclick="location.reload()">Restart Quiz</button>
+        </div>
+        
+        <!-- 3-Section Tabbed Review -->
+        <div id="detailed-review-section">
+            <h2 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">Test Review</h2>
+            
+            <div class="review-tabs">
+                <button class="tab-btn" data-tab="correct" onclick="switchTab('correct')">Correct (<span id="tab-count-correct">0</span>)</button>
+                <button class="tab-btn" data-tab="wrong" onclick="switchTab('wrong')">Incorrect (<span id="tab-count-wrong">0</span>)</button>
+                <button class="tab-btn" data-tab="unattempted" onclick="switchTab('unattempted')">Unattempted (<span id="tab-count-unattempted">0</span>)</button>
+            </div>
+            
+            <div id="review-content-correct" class="tab-content"></div>
+            <div id="review-content-wrong" class="tab-content"></div>
+            <div id="review-content-unattempted" class="tab-content"></div>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+// Base Data containing 50 questions
+const baseQuizData = [
+    // ================= 40 DIRECT MCQS - VERY EASY (Q1 - Q40) =================
+    // 1
+    {
+        qE: "What is India's rank in the Global Hunger Index 2026?",
+        qT: "உலகளாவிய பசி குறியீடு 2026-இல் இந்தியாவின் தரவரிசை என்ன?",
+        oE: ["84th", "95th", "100th", "106th"],
+        oT: ["84வது", "95வது", "100வது", "106வது"],
+        a: 2,
+        exp: "India ranked 100th in the Global Hunger Index 2026 with a GHI score of 24.1, placing it in the Serious category."
+    },
+    // 2
+    {
+        qE: "Who won the Men's Ballon d'Or Award in 2026?",
+        qT: "2026-ஆம் ஆண்டில் ஆடவர் பலூன் டி'ஓர் விருதை வென்றவர் யார்?",
+        oE: ["Harry Kane", "Lamine Yamal", "Unai Simon", "Lionel Messi"],
+        oT: ["ஹாரி கேன்", "லாமின் யமால்", "உனாய் சைமன்", "லியோனல் மெஸ்ஸி"],
+        a: 0,
+        exp: "England's Harry Kane won the Men's Ballon d'Or Award 2026 at the ceremony held in London, UK."
+    },
+    // 3
+    {
+        qE: "What is India's rank in the Rule of Law Index 2026?",
+        qT: "சட்டத்தின் ஆட்சி குறியீடு 2026-இல் இந்தியாவின் தரவரிசை என்ன?",
+        oE: ["79th", "84th", "88th", "92nd"],
+        oT: ["79வது", "84வது", "88வது", "92வது"],
+        a: 2,
+        exp: "Released by the World Justice Project, India ranked 88th in the Rule of Law Index 2026 with an overall score of 0.48."
+    },
+    // 4
+    {
+        qE: "Who won the 2026 Ramanujan Prize for Young Mathematicians?",
+        qT: "இளம் கணிதவியலாளர்களுக்கான 2026 ராமானுஜன் பரிசை வென்றவர் யார்?",
+        oE: ["Ashoke Sen", "Mahesh Kakde", "Neena Gupta", "Manjul Bhargava"],
+        oT: ["அசோக் சென்", "மகேஷ் காக்டே", "நீனா குப்தா", "மஞ்சுள் பார்கவா"],
+        a: 1,
+        exp: "Mahesh Kakde won the 2026 Ramanujan Prize for Young Mathematicians from Developing Countries for his work in Number Theory."
+    },
+    // 5
+    {
+        qE: "Where was the First BIMSTEC Home Ministers' Meeting held in October 2026?",
+        qT: "அக்டோபர் 2026-இல் முதல் பிம்ஸ்டெக் உள்துறை அமைச்சர்கள் மாநாடு எங்கு நடைபெற்றது?",
+        oE: ["Dhaka", "Colombo", "New Delhi", "Kathmandu"],
+        oT: ["டாக்கா", "கொழும்பு", "புதுடெல்லி", "காத்மாண்டு"],
+        a: 2,
+        exp: "The First BIMSTEC Home Ministers' Meeting was held in New Delhi under the chairmanship of Union Home Minister Amit Shah."
+    },
+    // 6
+    {
+        qE: "What was the theme of the 10th India Mobile Congress 2026?",
+        qT: "10வது இந்திய மொபைல் மாநாடு 2026-இன் கருப்பொருள் என்ன?",
+        oE: ["Powering The Global South", "Scale Without Boundaries", "Innovate Today Nourish Tomorrow", "Digital Future Now"],
+        oT: ["உலகளாவிய தெற்கை வலுப்படுத்துதல்", "எல்லைகளற்ற வளர்ச்சி", "இன்று புதுமை நாளை வளம்", "டிஜிட்டல் எதிர்காலம் இப்போதே"],
+        a: 1,
+        exp: "The 10th India Mobile Congress 2026, inaugurated by PM Modi at Yashobhoomi, New Delhi, had the theme 'Scale Without Boundaries'."
+    },
+    // 7
+    {
+        qE: "Which Indian city has been included in National Geographic's Best of the World 2027 list?",
+        qT: "நேஷனல் ஜியோகிராஃபிக்கின் '2027 உலகின் சிறந்த இடங்கள்' பட்டியலில் சேர்க்கப்பட்ட இந்திய நகரம் எது?",
+        oE: ["Udaipur", "Varanasi", "Jaipur", "Kochi"],
+        oT: ["உதய்பூர்", "வாரணாசி", "ஜெய்ப்பூர்", "கொச்சி"],
+        a: 2,
+        exp: "Jaipur, the capital of Rajasthan and a UNESCO World Heritage Site known as the Pink City, was included in National Geographic's Best of the World 2027 list."
+    },
+    // 8
+    {
+        qE: "Who won the Best Actor Award at the 26th IIFA Awards 2026?",
+        qT: "26வது ஐஃபா விருதுகள் 2026-இல் சிறந்த நடிகர் விருதை வென்றவர் யார்?",
+        oE: ["Sanjay Dutt", "Ranveer Singh", "Vicky Kaushal", "Ranbir Kapoor"],
+        oT: ["சஞ்சய் தத்", "ரன்வீர் சிங்", "விக்கி கௌஷல்", "ரன்பீர் கபூர்"],
+        a: 1,
+        exp: "Ranveer Singh won the Best Actor Award for the film 'Dhurandhar' at the 26th IIFA Awards 2026."
+    },
+    // 9
+    {
+        qE: "Which Union Territory has become India's first 100% Organic Union Territory?",
+        qT: "இந்தியாவின் முதல் 100% இயற்கை விவசாய யூனியன் பிரதேசமாக மாறிய யூனியன் பிரதேசம் எது?",
+        oE: ["Lakshadweep", "Ladakh", "Puducherry", "Chandigarh"],
+        oT: ["லட்சத்தீவு", "லடாக்", "புதுச்சேரி", "சண்டிகர்"],
+        a: 1,
+        exp: "Ladakh was declared India's first 100% Organic Union Territory by Lieutenant Governor Vinai Kumar Saxena."
+    },
+    // 10
+    {
+        qE: "Sukhna Lake, recently designated as a Ramsar Site, is located in which Union Territory?",
+        qT: "சமீபத்தில் ராம்சர் தளமாக அறிவிக்கப்பட்ட சுக்னா ஏரி எந்த யூனியன் பிரதேசத்தில் அமைந்துள்ளது?",
+        oE: ["Jammu and Kashmir", "Delhi", "Chandigarh", "Ladakh"],
+        oT: ["ஜம்மு மற்றும் காஷ்மீர்", "டெல்லி", "சண்டிகர்", "லடாக்"],
+        a: 2,
+        exp: "Sukhna Lake is a man-made lake located at the foothills of the Shivalik Hills and became Chandigarh's first Ramsar Site."
+    },
+    // 11
+    {
+        qE: "Sauj Jheel, recently designated as a Ramsar Site, is located in which state?",
+        qT: "சமீபத்தில் ராம்சர் தளமாக அறிவிக்கப்பட்ட சவுஜ் ஏரி எந்த மாநிலத்தில் அமைந்துள்ளது?",
+        oE: ["Bihar", "Uttar Pradesh", "Rajasthan", "Madhya Pradesh"],
+        oT: ["பீகார்", "உத்தரப் பிரதேசம்", "ராஜஸ்தான்", "மத்தியப் பிரதேசம்"],
+        a: 1,
+        exp: "Sauj Jheel, located in Mainpuri district near Saman Bird Sanctuary, became the 14th Ramsar Site of Uttar Pradesh."
+    },
+    // 12
+    {
+        qE: "Which launch vehicle was used by ISRO to launch the NVS-03 navigation satellite?",
+        qT: "NVS-03 வழிகாட்டுதல் செயற்கைக்கோளை ஏவ இஸ்ரோ பயன்படுத்திய ஏவுகணை எது?",
+        oE: ["PSLV-C61", "GSLV-F18", "LVM3-M6", "SSLV-D4"],
+        oT: ["PSLV-C61", "GSLV-F18", "LVM3-M6", "SSLV-D4"],
+        a: 1,
+        exp: "ISRO launched the NVS-03 navigation satellite aboard the GSLV-F18 launch vehicle from Sriharikota to strengthen the NavIC system."
+    },
+    // 13
+    {
+        qE: "Which company has been selected as the strategic buyer for IDBI Bank?",
+        qT: "ஐடிபிஐ வங்கியின் மூலோபாய வாங்குபவராக எந்த நிறுவனம் தேர்ந்தெடுக்கப்பட்டுள்ளது?",
+        oE: ["Emirates NBD", "Fairfax Financial", "Kotak Mahindra Group", "BlackRock"],
+        oT: ["எமிரேட்ஸ் என்.பி.டி", "ஃபேர்ஃபாக்ஸ் பைனான்சியல்", "கோடக் மஹிந்திரா குழுமம்", "பிளாக்ராக்"],
+        a: 1,
+        exp: "Canada-based Fairfax Financial was selected as the strategic buyer to acquire a 60.72% stake in IDBI Bank."
+    },
+    // 14
+    {
+        qE: "Who won the 2026 Nobel Prize in Literature?",
+        qT: "2026-ஆம் ஆண்டிற்கான இலக்கியத்திற்கான நோபல் பரிசை வென்றவர் யார்?",
+        oE: ["Anne Carson", "Navi Pillay", "Margaret Atwood", "Han Kang"],
+        oT: ["ஆன் கார்சன்", "நவி பிள்ளை", "மார்கரெட் அட்வுட்", "ஹான் காங்"],
+        a: 0,
+        exp: "Canadian poet and essayist Anne Carson won the 2026 Nobel Prize in Literature."
+    },
+    // 15
+    {
+        qE: "Who won the 2026 Nobel Peace Prize?",
+        qT: "2026-ஆம் ஆண்டிற்கான அமைதிக்கான நோபல் பரிசை வென்றவர் யார்?",
+        oE: ["Antonio Guterres", "Navanethem Pillay", "Anne Carson", "Milton Dick"],
+        oT: ["அன்டோனியோ குட்டரெஸ்", "நவநீதம் பிள்ளை", "ஆன் கார்சன்", "மில்டன் டிக்"],
+        a: 1,
+        exp: "South Africa's Navanethem 'Navi' Pillay won the 2026 Nobel Peace Prize for promoting peace and international law."
+    },
+    // 16
+    {
+        qE: "Who became the first Indian physicist to receive the Oskar Klein Medal in 2026?",
+        qT: "2026-இல் ஆஸ்கார் கிளீன் பதக்கத்தைப் பெற்ற முதல் இந்திய இயற்பியலாளர் யார்?",
+        oE: ["Palle Rama Rao", "Ashoke Sen", "Mahesh Kakde", "C. N. R. Rao"],
+        oT: ["பல்லே ராம ராவ்", "அசோக் சென்", "மகேஷ் காக்டே", "சி. என். ஆர். ராவ்"],
+        a: 1,
+        exp: "Professor Ashoke Sen became the first Indian physicist to receive the Oskar Klein Medal awarded by Stockholm University."
+    },
+    // 17
+    {
+        qE: "Who received the 2026 Princess of Asturias Award for Sports?",
+        qT: "விளையாட்டுக்கான 2026 அஸ்டூரியாஸ் இளவரசி விருதைப் பெற்றவர் யார்?",
+        oE: ["Novak Djokovic", "Max Verstappen", "Lionel Messi", "Carlos Alcaraz"],
+        oT: ["நோவக் ஜோகோவிச்", "மாக்ஸ் வெர்ஸ்டாப்பன்", "லியோனல் மெஸ்ஸி", "கார்லோஸ் அல்காரஸ்"],
+        a: 2,
+        exp: "Lionel Messi became the first individual footballer to win the Princess of Asturias Award for Sports, awarded by Spain."
+    },
+    // 18
+    {
+        qE: "Who was selected as the first winner of the Bharat Ratna Dr. Bhupen Hazarika National Award 2026?",
+        qT: "பாரத ரத்னா டாக்டர் பூபன் ஹசாரிகா தேசிய விருது 2026-இன் முதல் வெற்றியாளராகத் தேர்ந்தெடுக்கப்பட்டவர் யார்?",
+        oE: ["Shreya Ghoshal", "Usha Mangeshkar", "Asha Bhosle", "K. S. Chithra"],
+        oT: ["ஸ்ரேயா கோஷல்", "உஷா மங்கேஷ்கர்", "ஆஷா போஸ்லே", "கே. எஸ். சித்ரா"],
+        a: 1,
+        exp: "Playback singer Usha Mangeshkar was selected by the Government of Assam for the inaugural Dr. Bhupen Hazarika National Award carrying a cash prize of ₹10 Lakh."
+    },
+    // 19
+    {
+        qE: "Which country hosted the 20th Asian Games 2026?",
+        qT: "20வது ஆசிய விளையாட்டுப் போட்டிகள் 2026-ஐ எந்த நாடு நடத்தியது?",
+        oE: ["China", "South Korea", "Japan", "Qatar"],
+        oT: ["சீனா", "தென் கொரியா", "ஜப்பான்", "கத்தார்"],
+        a: 2,
+        exp: "The 20th Asian Games 2026 were hosted by Japan in Aichi-Nagoya with the motto 'Imagine One Asia' and mascot HONOHON."
+    },
+    // 20
+    {
+        qE: "What was India's overall rank on the medal table at the 2026 Asian Para Games?",
+        qT: "2026 ஆசிய பாரா விளையாட்டுப் போட்டிகளின் பதக்கப் பட்டியலில் இந்தியாவின் ஒட்டுமொத்த இடம் என்ன?",
+        oE: ["Second", "Third", "Fourth", "Fifth"],
+        oT: ["இரண்டாவது", "மூன்றாவது", "நான்காவது", "ஐந்தாவது"],
+        a: 2,
+        exp: "India finished fourth overall at the 2026 Asian Para Games with 114 medals, comprising 30 Gold, 35 Silver, and 49 Bronze."
+    },
+    // 21
+    {
+        qE: "Who won the Men's Singles tennis title at the China Open 2026?",
+        qT: "சீனா ஓபன் 2026 ஆடவர் ஒற்றையர் டென்னிஸ் பட்டத்தை வென்றவர் யார்?",
+        oE: ["Carlos Alcaraz", "Novak Djokovic", "Jannik Sinner", "Alexander Zverev"],
+        oT: ["கார்லோஸ் அல்காரஸ்", "நோவக் ஜோகோவிச்", "ஜானிக் சின்னர்", "அலெக்சாண்டர் ஸ்வெரெவ்"],
+        a: 1,
+        exp: "Serbia's Novak Djokovic won his 7th China Open Men's Singles title in 2026, while China's Zheng Qinwen won the Women's Singles title."
+    },
+    // 22
+    {
+        qE: "Who has been appointed as the 29th Chief of the Air Staff of India?",
+        qT: "இந்தியாவின் 29வது விமானப்படைத் தளபதியாக நியமிக்கப்பட்டவர் யார்?",
+        oE: ["Air Marshal Inderpal Singh Walia", "Air Marshal Ashutosh Dixit", "Air Marshal Amar Preet Singh", "Air Marshal Vivek Ram Chaudhari"],
+        oT: ["ஏர் மார்ஷல் இந்தர்பால் சிங் வாலியா", "ஏர் மார்ஷல் அசுதோஷ் தீட்சித்", "ஏர் மார்ஷல் அமர் ப்ரீத் சிங்", "ஏர் மார்ஷல் விவேக் ராம் சௌத்ரி"],
+        a: 1,
+        exp: "Air Marshal Ashutosh Dixit was appointed as the 29th Chief of the Air Staff, while Air Marshal Inderpal Singh Walia became Vice Chief."
+    },
+    // 23
+    {
+        qE: "Who has been appointed as the new captain of the Indian Women's Cricket Team?",
+        qT: "இந்திய மகளிர் கிரிக்கெட் அணியின் புதிய கேப்டனாக நியமிக்கப்பட்டவர் யார்?",
+        oE: ["Shafali Verma", "Smriti Mandhana", "Deepti Sharma", "Jemimah Rodrigues"],
+        oT: ["ஷபாலி வர்மா", "ஸ்மிருதி மந்தனா", "தீப்தி சர்மா", "ஜெமிமா ரோட்ரிக்ஸ்"],
+        a: 1,
+        exp: "Smriti Mandhana became the new captain of the Indian Women's Cricket Team, replacing Harmanpreet Kaur."
+    },
+    // 24
+    {
+        qE: "Which state or Union Territory launched India's first High-Altitude Wildlife Safari for Snow Leopards?",
+        qT: "பனிச்சிறுத்தைகளுக்கான இந்தியாவின் முதல் உயரமான வனவிலங்கு சஃபாரியை எந்த மாநிலம் அல்லது யூனியன் பிரதேசம் தொடங்கியது?",
+        oE: ["Himachal Pradesh", "Uttarakhand", "Ladakh", "Sikkim"],
+        oT: ["இமாச்சலப் பிரதேசம்", "உத்தரகாண்ட்", "லடாக்", "சிக்கிம்"],
+        a: 2,
+        exp: "Ladakh Lieutenant Governor Vinai Kumar Saxena launched India's first High-Altitude Wildlife Safari for Snow Leopards across Rumbak, Shang, and Uley."
+    },
+    // 25
+    {
+        qE: "Which butterfly has been selected as Chhattisgarh's first State Butterfly?",
+        qT: "சத்தீஸ்கரின் முதல் மாநில பட்டாம்பூச்சியாக எந்தப் பட்டாம்பூச்சி தேர்ந்தெடுக்கப்பட்டுள்ளது?",
+        oE: ["Blue Mormon", "Orange Oakleaf", "Tamil Yeoman", "Common Peacock"],
+        oT: ["நீல மோர்மன்", "ஆரஞ்சு ஓக்லீஃப்", "தமிழ் மறவன்", "பொது மயில் பட்டாம்பூச்சி"],
+        a: 1,
+        exp: "The Orange Oakleaf, scientifically known as Kallima inachus, was selected as Chhattisgarh's first State Butterfly."
+    },
+    // 26
+    {
+        qE: "Where was the 14th edition of India Chem 2026 held?",
+        qT: "இந்தியா கெம் 2026-இன் 14வது பதிப்பு எங்கு நடைபெற்றது?",
+        oE: ["New Delhi", "Ahmedabad", "Mumbai", "Hyderabad"],
+        oT: ["புதுடெல்லி", "அகமதாபாத்", "மும்பை", "ஹைதராபாத்"],
+        a: 2,
+        exp: "The 14th India Chem 2026 was held in Mumbai, Maharashtra, inaugurated by Union Minister J. P. Nadda with Japan as the Partner Country."
+    },
+    // 27
+    {
+        qE: "Which Indian institution topped among Indian universities in the Times Higher Education World University Rankings 2027?",
+        qT: "டைம்ஸ் உயர்கல்வி உலகப் பல்கலைக்கழக தரவரிசை 2027-இல் இந்திய நிறுவனங்களில் முதலிடம் பிடித்த நிறுவனம் எது?",
+        oE: ["IIT Madras", "IISc Bengaluru", "Saveetha Institute Chennai", "IIT Delhi"],
+        oT: ["ஐஐடி மெட்ராஸ்", "ஐஐஎஸ்சி பெங்களூரு", "சவீதா நிறுவனம் சென்னை", "ஐஐடி டெல்லி"],
+        a: 1,
+        exp: "IISc Bengaluru topped among Indian institutions with a global rank of 254th, while the University of Oxford topped globally."
+    },
+    // 28
+    {
+        qE: "INDRA-2026 is a bilateral naval exercise conducted between India and which country?",
+        qT: "இந்திரா-2026 என்பது இந்தியாவிற்கும் எந்த நாட்டிற்கும் இடையே நடத்தப்படும் இருதரப்பு கடற்படைப் பயிற்சியாகும்?",
+        oE: ["Indonesia", "Russia", "France", "United Kingdom"],
+        oT: ["இந்தோனேசியா", "ரஷ்யா", "பிரான்ஸ்", "இங்கிலாந்து"],
+        a: 1,
+        exp: "INDRA-2026 is a bilateral naval exercise between India and Russia, conducted at Vladivostok with the participation of INS Sahyadri."
+    },
+    // 29
+    {
+        qE: "Exercise Garuda Shakti 2026 was conducted between India and which country?",
+        qT: "கருட சக்தி 2026 பயிற்சி இந்தியாவிற்கும் எந்த நாட்டிற்கும் இடையே நடைபெற்றது?",
+        oE: ["Singapore", "Indonesia", "Australia", "Thailand"],
+        oT: ["சிங்கப்பூர்", "இந்தோனேசியா", "ஆஸ்திரேலியா", "தாய்லாந்து"],
+        a: 1,
+        exp: "The 11th edition of Exercise Garuda Shakti, a joint special forces military exercise between India and Indonesia, was held in East Java, Indonesia."
+    },
+    // 30
+    {
+        qE: "Which state became India's 6th fully literate state under the ULLAS scheme?",
+        qT: "உல்லாஸ் திட்டத்தின் கீழ் இந்தியாவின் 6வது முழு எழுத்தறிவு பெற்ற மாநிலமாக மாறிய மாநிலம் எது?",
+        oE: ["Sikkim", "Tripura", "Uttarakhand", "Himachal Pradesh"],
+        oT: ["சிக்கிம்", "திரிபுரா", "உத்தரகாண்ட்", "இமாச்சலப் பிரதேசம்"],
+        a: 2,
+        exp: "Uttarakhand became India's 6th fully literate state under ULLAS, following Mizoram, Goa, Tripura, Himachal Pradesh, and Sikkim."
+    },
+    // 31
+    {
+        qE: "What is the name of India's first National Counter-Terrorism Policy and Strategy launched by the Ministry of Home Affairs?",
+        qT: "மத்திய உள்துறை அமைச்சகத்தால் தொடங்கப்பட்ட இந்தியாவின் முதல் தேசிய பயங்கரவாத எதிர்ப்புக் கொள்கையின் பெயர் என்ன?",
+        oE: ["SURAKSHA", "PRAHAAR", "KAVACH", "RAKSHA"],
+        oT: ["சுரக்ஷா", "பிரஹார்", "கவச்", "ரக்ஷா"],
+        a: 1,
+        exp: "PRAHAAR is India's first National Counter-Terrorism Policy and Strategy, establishing a zero-tolerance framework against terrorism."
+    },
+    // 32
+    {
+        qE: "Which is the Indian Navy's first indigenous Multi-Purpose Vessel?",
+        qT: "இந்திய கடற்படையின் முதல் உள்நாட்டு பல்நோக்கு கப்பல் எது?",
+        oE: ["INS Mangrol", "INS Samarthak", "INS Arnala", "INS Sahyadri"],
+        oT: ["ஐஎன்எஸ் மங்க்ரோல்", "ஐஎன்எஸ் சமர்த்தக்", "ஐஎன்எஸ் அர்னாலா", "ஐஎன்எஸ் சஹ்யாத்ரி"],
+        a: 1,
+        exp: "INS Samarthak, built by Larsen and Toubro, was commissioned at Naval Base Karwar in Karnataka by Vice-President C. P. Radhakrishnan."
+    },
+    // 33
+    {
+        qE: "What is the name of India's first indigenous Fleet Support Ship launched at Hindustan Shipyard Limited?",
+        qT: "ஹிந்துஸ்தான் கப்பல் கட்டும் தளத்தில் கடலில் இறக்கப்பட்ட இந்தியாவின் முதல் உள்நாட்டு கடற்படை ஆதரவுக் கப்பலின் பெயர் என்ன?",
+        oE: ["Shreyas", "Surya", "Samarthak", "Sahyadri"],
+        oT: ["ஸ்ரேயாஸ்", "சூர்யா", "சமர்த்தக்", "சஹ்யாத்ரி"],
+        a: 1,
+        exp: "'Surya' is India's first indigenous Fleet Support Ship (FSS-1), launched by Defence Minister Rajnath Singh at Visakhapatnam."
+    },
+    // 34
+    {
+        qE: "On which date is World Food Day celebrated every year?",
+        qT: "ஒவ்வொரு ஆண்டும் உலக உணவு தினம் எந்தத் தேதியில் கொண்டாடப்படுகிறது?",
+        oE: ["11 October", "15 October", "16 October", "24 October"],
+        oT: ["அக்டோபர் 11", "அக்டோபர் 15", "அக்டோபர் 16", "அக்டோபர் 24"],
+        a: 2,
+        exp: "World Food Day is celebrated annually on 16 October. Its 2026 theme was 'Innovate today. Nourish tomorrow.'"
+    },
+    // 35
+    {
+        qE: "On which date is National Unity Day celebrated every year to mark Sardar Vallabhbhai Patel's birth anniversary?",
+        qT: "சர்தார் வல்லபபாய் படேலின் பிறந்தநாளை முன்னிட்டு தேசிய ஒற்றுமை தினம் ஒவ்வொரு ஆண்டும் எப்போது கொண்டாடப்படுகிறது?",
+        oE: ["2 October", "8 October", "24 October", "31 October"],
+        oT: ["அக்டோபர் 2", "அக்டோபர் 8", "அக்டோபர் 24", "அக்டோபர் 31"],
+        a: 3,
+        exp: "National Unity Day is celebrated on 31 October every year. Bharat Parv 2026 was held at Ekta Nagar, Gujarat, with the theme Vande Mataram."
+    },
+    // 36
+    {
+        qE: "Which state launched India's first 3D-Printed Rural Housing Pilot Project under PMAY-G 2.0?",
+        qT: "பிஎம்ஏஒய்-ஜி 2.0-இன் கீழ் இந்தியாவின் முதல் 3டி-அச்சிடப்பட்ட கிராமப்புற வீட்டுவசதி முன்னோடித் திட்டத்தைத் தொடங்கிய மாநிலம் எது?",
+        oE: ["Odisha", "Andhra Pradesh", "Kerala", "Tamil Nadu"],
+        oT: ["ஒடிசா", "ஆந்திரப் பிரதேசம்", "கேரளா", "தமிழ்நாடு"],
+        a: 1,
+        exp: "Andhra Pradesh launched India's first 3D concrete-printed rural housing pilot project under PMAY-G 2.0 to construct 177 houses."
+    },
+    // 37
+    {
+        qE: "Which bank was recently removed from the Second Schedule of the Reserve Bank of India Act, 1934?",
+        qT: "சமீபத்தில் இந்திய ரிசர்வ் வங்கிச் சட்டம் 1934-இன் இரண்டாவது அட்டவணையிலிருந்து நீக்கப்பட்ட வங்கி எது?",
+        oE: ["RBL Bank", "Paytm Payments Bank Limited", "Axis Bank", "IDBI Bank"],
+        oT: ["ஆர்பிஎல் வங்கி", "பேடிஎம் பேமெண்ட்ஸ் வங்கி லிமிடெட்", "ஆக்சிஸ் வங்கி", "ஐடிபிஐ வங்கி"],
+        a: 1,
+        exp: "Paytm Payments Bank Limited was removed from the Second Schedule of the RBI Act, 1934, which lists Scheduled Banks."
+    },
+    // 38
+    {
+        qE: "Ambaji Mohanthal Temple Prasad, which recently received a Geographical Indication tag, belongs to which state?",
+        qT: "சமீபத்தில் புவிசார் குறியீடு பெற்ற அம்பாஜி மோகன்தால் கோயில் பிரசாதம் எந்த மாநிலத்தைச் சேர்ந்தது?",
+        oE: ["Rajasthan", "Gujarat", "Maharashtra", "Madhya Pradesh"],
+        oT: ["ராஜஸ்தான்", "குஜராத்", "மகாராஷ்டிரா", "மத்தியப் பிரதேசம்"],
+        a: 1,
+        exp: "The traditional Mohanthal Prasad of Ambaji Temple in Gujarat recently received the GI tag."
+    },
+    // 39
+    {
+        qE: "Which city will host the 2030 Asian Games?",
+        qT: "2030 ஆசிய விளையாட்டுப் போட்டிகளை எந்த நகரம் நடத்தவுள்ளது?",
+        oE: ["Riyadh", "Doha", "Bangkok", "Ahmedabad"],
+        oT: ["ரியாத்", "தோஹா", "பாங்காக்", "அகமதாபாத்"],
+        a: 1,
+        exp: "Doha, Qatar will host the 2030 Asian Games."
+    },
+    // 40
+    {
+        qE: "Where will the 19th Pravasi Bharatiya Diwas Convention 2027 be held?",
+        qT: "19வது பிரவாசி பாரதிய திவஸ் மாநாடு 2027 எங்கு நடைபெறவுள்ளது?",
+        oE: ["Bhubaneswar", "Kolkata", "Jaipur", "Mumbai"],
+        oT: ["புவனேஸ்வர்", "கொல்கத்தா", "ஜெய்ப்பூர்", "மும்பை"],
+        a: 1,
+        exp: "The 19th Pravasi Bharatiya Diwas Convention 2027 will be held in Kolkata, West Bengal."
+    },
+
+    // ================= 40 MEDIUM QUESTIONS - SUB-HEADING POINTS (Q41 - Q80) =================
+    // 41
+    {
+        qE: "Which two organisations jointly release the Global Hunger Index?",
+        qT: "உலகளாவிய பசி குறியீட்டை எந்த இரு அமைப்புகள் கூட்டாக வெளியிடுகின்றன?",
+        oE: ["FAO and UNICEF", "Concern Worldwide and Welthungerhilfe", "World Bank and UNDP", "WHO and World Food Programme"],
+        oT: ["எஃப்ஏஓ மற்றும் யுனிசெஃப்", "கன்சர்ன் வேர்ல்ட்வைட் மற்றும் வெல்தங்கர்ஹில்ஃப்", "உலக வங்கி மற்றும் யுஎன்டிபி", "உலக சுகாதார அமைப்பு மற்றும் உலக உணவுத் திட்டம்"],
+        a: 1,
+        exp: "The Global Hunger Index is jointly released by Concern Worldwide and Welthungerhilfe based on four indicators: undernourishment, child stunting, child wasting, and child mortality."
+    },
+    // 42
+    {
+        qE: "Who won the Women's Ballon d'Or Award 2026?",
+        qT: "2026 மகளிர் பலூன் டி'ஓர் விருதை வென்றவர் யார்?",
+        oE: ["Aitana Bonmati", "Alexia Putellas", "Zheng Qinwen", "Salma Paralluelo"],
+        oT: ["ஐதானா போன்மதி", "அலெக்ஸியா புட்டெல்லாஸ்", "ஜெங் கின்வென்", "சல்மா பரல்லுவேலோ"],
+        a: 1,
+        exp: "Spain's Alexia Putellas won the Women's Ballon d'Or 2026, while Lamine Yamal won the Kopa Trophy and Unai Simon won the Yashin Trophy."
+    },
+    // 43
+    {
+        qE: "Which Japanese architect designed the Bihar Museum in Patna, which ranked 9th globally in the World's 100 Best Museums 2026?",
+        qT: "உலகின் 100 சிறந்த அருங்காட்சியகங்கள் 2026 பட்டியலில் 9வது இடத்தைப் பிடித்த பாட்னாவின் பீகார் அருங்காட்சியகத்தை வடிவமைத்த ஜப்பானியக் கட்டிடக்கலைஞர் யார்?",
+        oE: ["Tadao Ando", "Kengo Kuma", "Fumihiko Maki", "Shigeru Ban"],
+        oT: ["தடாவோ அண்டோ", "கெங்கோ குமா", "ஃபுமிஹிகோ மாக்கி", "ஷிகெரு பான்"],
+        a: 2,
+        exp: "Bihar Museum in Patna, designed by Japanese architect Fumihiko Maki, ranked 9th globally and 1st in Asia."
+    },
+    // 44
+    {
+        qE: "Which film won the Best Picture Award at the 26th IIFA Awards 2026?",
+        qT: "26வது ஐஃபா விருதுகள் 2026-இல் சிறந்த திரைப்பட விருதை வென்ற படம் எது?",
+        oE: ["Saiyaara", "Dhurandhar", "Gaman", "Parinda"],
+        oT: ["சையாரா", "துரந்தர்", "கமன்", "பரிந்தா"],
+        a: 1,
+        exp: "'Dhurandhar', directed by Aditya Dhar, won Best Picture, Best Director, Best Actor (Ranveer Singh), and Best Supporting Actor (Sanjay Dutt)."
+    },
+    // 45
+    {
+        qE: "Following the addition of Sukhna Lake and Sauj Jheel, what is the total number of Ramsar Sites in India?",
+        qT: "சுக்னா ஏரி மற்றும் சவுஜ் ஏரி சேர்க்கப்பட்டதைத் தொடர்ந்து, இந்தியாவில் உள்ள மொத்த ராம்சர் தளங்களின் எண்ணிக்கை எவ்வளவு?",
+        oE: ["98", "101", "103", "105"],
+        oT: ["98", "101", "103", "105"],
+        a: 2,
+        exp: "India now has a total of 103 Ramsar Sites, the highest in Asia, with Tamil Nadu leading at 20 sites and Uttar Pradesh second at 14 sites."
+    },
+    // 46
+    {
+        qE: "What is the total financial outlay approved for the Pradhan Mantri Viksit Gram Swaraj Yojana?",
+        qT: "பிரதம மந்திரி விக்சித் கிராம் சுயராஜ் யோஜனா திட்டத்திற்கு அங்கீகரிக்கப்பட்ட மொத்த நிதி ஒதுக்கீடு எவ்வளவு?",
+        oE: ["₹1,856.67 Crore", "₹7,395.55 Crore", "₹11,900 Crore", "₹53,428 Crore"],
+        oT: ["₹1,856.67 கோடி", "₹7,395.55 கோடி", "₹11,900 கோடி", "₹53,428 கோடி"],
+        a: 1,
+        exp: "PM VGSY has a total financial outlay of ₹7,395.55 Crore for 5 years (2026–27 to 2030–31) under the Ministry of Panchayati Raj."
+    },
+    // 47
+    {
+        qE: "Which ministry launched the PRAGATI-50 initiative under Swachh Bharat Mission-Urban 2.0 to develop 50 clean role-model cities?",
+        qT: "தூய்மை இந்தியா இயக்கம்-நகர்ப்புறம் 2.0-இன் கீழ் 50 தூய்மையான முன்மாதிரி நகரங்களை உருவாக்க PRAGATI-50 முயற்சியைத் தொடங்கிய அமைச்சகம் எது?",
+        oE: ["Ministry of Panchayati Raj", "Ministry of Housing and Urban Affairs", "Ministry of Jal Shakti", "Ministry of Environment, Forest and Climate Change"],
+        oT: ["பஞ்சாயத்து ராஜ் அமைச்சகம்", "வீட்டுவசதி மற்றும் நகர்ப்புற விவகார அமைச்சகம்", "ஜல் சக்தி அமைச்சகம்", "சுற்றுச்சூழல், வனம் மற்றும் காலநிலை மாற்ற அமைச்சகம்"],
+        a: 1,
+        exp: "Minister of Housing and Urban Affairs Manohar Lal launched PRAGATI-50 in New Delhi under Swachh Bharat Mission-Urban 2.0."
+    },
+    // 48
+    {
+        qE: "In the 57th GST Council Meeting chaired by Nirmala Sitharaman, the criminal prosecution threshold was recommended to be raised from ₹1 Crore to what amount?",
+        qT: "நிர்மலா சீதாராமன் தலைமையிலான 57வது ஜிஎஸ்டி கவுன்சில் கூட்டத்தில், குற்றவியல் வழக்குத் தொடரும் வரம்பை ₹1 கோடியிலிருந்து எவ்வளவாக உயர்த்தப் பரிந்துரைக்கப்பட்டது?",
+        oE: ["₹2 Crore", "₹3 Crore", "₹5 Crore", "₹10 Crore"],
+        oT: ["₹2 கோடி", "₹3 கோடி", "₹5 கோடி", "₹10 கோடி"],
+        a: 2,
+        exp: "The 57th GST Council Meeting in New Delhi recommended raising the criminal prosecution threshold from ₹1 Crore to ₹5 Crore."
+    },
+    // 49
+    {
+        qE: "Which district ranked first as the best-performing district under the PM Dhan-Dhaanya Krishi Yojana?",
+        qT: "பிஎம் தன்-தான்ய கிருஷி யோஜனாவின் கீழ் சிறப்பாகச் செயல்படும் மாவட்டங்களில் முதலிடம் பிடித்த மாவட்டம் எது?",
+        oE: ["Nagaur", "Gaya", "Karnal", "Mainpuri"],
+        oT: ["நாகவுர்", "கயா", "கர்னால்", "மைன்புரி"],
+        a: 1,
+        exp: "Gaya in Bihar ranked 1st and Nagaur in Rajasthan ranked 2nd under the PM Dhan-Dhaanya Krishi Yojana, which was launched on 11 October 2025."
+    },
+    // 50
+    {
+        qE: "Which two cheetahs were released into the Veerangana Durgavati Tiger Reserve in Madhya Pradesh in October 2026?",
+        qT: "அக்டோபர் 2026-இல் மத்தியப் பிரதேசத்தின் வீராங்கனா துர்காவதி புலிகள் காப்பகத்தில் விடுவிக்கப்பட்ட இரண்டு சிறுத்தைகள் எவை?",
+        oE: ["Asha and Pawan", "Vyom and Neera", "Mukhi and Jwala", "Surya and Tara"],
+        oT: ["ஆஷா மற்றும் பவன்", "வியோம் மற்றும் நீரா", "முகி மற்றும் ஜுவாலா", "சூர்யா மற்றும் தாரா"],
+        a: 1,
+        exp: "Male cheetah Vyom and female cheetah Neera were released into the Veerangana Durgavati Tiger Reserve in Madhya Pradesh."
+    },
+    // 51
+    {
+        qE: "Who won India's first-ever Women's Freestyle Gold Medal at the Senior World Wrestling Championships 2026 in Kazakhstan?",
+        qT: "கஜகஸ்தானில் நடைபெற்ற 2026 சீனியர் உலக மல்யுத்த சாம்பியன்ஷிப்பில் இந்தியாவின் முதல் மகளிர் ஃப்ரீஸ்டைல் தங்கப் பதக்கத்தை வென்றவர் யார்?",
+        oE: ["Neelam Sirohi", "Manisha Bhanwala", "Kajal Dhochak", "Tanu Sharma"],
+        oT: ["நீலம் சிரோஹி", "மனிஷா பன்வாலா", "காஜல் தோச்சக்", "தனு சர்மா"],
+        a: 1,
+        exp: "Manisha Bhanwala won Gold in the Women's 59 kg category. India finished 7th with 4 medals (1 Gold, 2 Silver, 1 Bronze)."
+    },
+    // 52
+    {
+        qE: "Who won the 2026 Nobel Prize in Physics for his work on the IceCube Neutrino Observatory?",
+        qT: "ஐஸ்கியூப் நியூட்ரினோ ஆய்வகத்தில் மேற்கொண்ட பணிக்காக 2026 இயற்பியலுக்கான நோபல் பரிசை வென்றவர் யார்?",
+        oE: ["Karl Deisseroth", "Francis Halzen", "Henri B. Kagan", "Robert E. Hall"],
+        oT: ["கார்ல் டீசெரோத்", "பிரான்சிஸ் ஹால்சென்", "ஹென்றி பி. காகன்", "ராபர்ட் இ. ஹால்"],
+        a: 1,
+        exp: "Francis Halzen of the USA won the 2026 Nobel Prize in Physics for his work on the IceCube Neutrino Observatory at the South Pole and discovery of high-energy neutrinos."
+    },
+    // 53
+    {
+        qE: "Karl Deisseroth, Peter Hegemann, and Georg Nagel won the 2026 Nobel Prize in Physiology or Medicine for discoveries related to which technique?",
+        qT: "கார்ல் டீசெரோத், பீட்டர் ஹெக்மேன் மற்றும் ஜார்ஜ் நாகெல் ஆகியோர் எந்தத் தொழில்நுட்பம் தொடர்பான கண்டுபிடிப்புகளுக்காக 2026 மருத்துவத்திற்கான நோபல் பரிசை வென்றனர்?",
+        oE: ["CRISPR gene editing", "Optogenetics", "mRNA vaccines", "Asymmetric autocatalysis"],
+        oT: ["கிரிஸ்பர் மரபணு திருத்தம்", "ஆப்டோஜெனெடிக்ஸ்", "எம்ஆர்என்ஏ தடுப்பூசிகள்", "சமச்சீரற்ற சுயவினையூக்கம்"],
+        a: 1,
+        exp: "They were awarded the 2026 Nobel Prize in Physiology or Medicine for discoveries related to light-gated ion channels and optogenetics."
+    },
+    // 54
+    {
+        qE: "Who received the First Jaspal Rana Award 2026 conferred by the Indian Olympic Association?",
+        qT: "இந்திய ஒலிம்பிக் சங்கத்தால் வழங்கப்பட்ட முதல் ஜஸ்பால் ராணா விருது 2026-ஐப் பெற்றவர் யார்?",
+        oE: ["Sujeet Kalkal", "Kumkum Mohod", "Lovlina Borgohain", "Aman Sehrawat"],
+        oT: ["சுஜீத் கல்கால்", "கும்கும் மொஹோத்", "லவ்லினா போர்கோஹைன்", "அமன் செஹ்ராவத்"],
+        a: 1,
+        exp: "Archer Kumkum Mohod received the First Jaspal Rana Award 2026, while wrestler Sujeet Kalkal received the First Raja Randhir Singh Award."
+    },
+    // 55
+    {
+        qE: "Who served as India's flag-bearers at the Opening Ceremony of the 20th Asian Games 2026?",
+        qT: "20வது ஆசிய விளையாட்டுப் போட்டிகள் 2026-இன் தொடக்க விழாவில் இந்தியாவின் கொடியேந்திகளாகச் செயல்பட்டவர்கள் யார்?",
+        oE: ["Pramod Bhagat and Simran Sharma", "Manu Bhaker and Pawan Sehrawat", "Harmanpreet Singh and Lovlina Borgohain", "Neeru Dhanda and Shreyas Iyer"],
+        oT: ["பிரமோத் பகத் மற்றும் சிம்ரன் சர்மா", "மனு பாக்கர் மற்றும் பவன் செஹ்ராவத்", "ஹர்மன்பிரீத் சிங் மற்றும் லவ்லினா போர்கோஹைன்", "நீரு தண்டா மற்றும் ஸ்ரேயாஸ் ஐயர்"],
+        a: 1,
+        exp: "Shooter Manu Bhaker and Kabaddi player Pawan Sehrawat were India's opening flag-bearers at the 2026 Asian Games, while Neeru Dhanda was the closing flag-bearer."
+    },
+    // 56
+    {
+        qE: "Who captained the Indian Men's T20 Cricket team that defeated Pakistan to win Gold at the Asian Games 2026?",
+        qT: "ஆசிய விளையாட்டுப் போட்டிகள் 2026-இல் பாகிஸ்தானை வீழ்த்தி தங்கம் வென்ற இந்திய ஆடவர் டி20 கிரிக்கெட் அணியின் கேப்டன் யார்?",
+        oE: ["Shubman Gill", "Shreyas Iyer", "Suryakumar Yadav", "Ruturaj Gaikwad"],
+        oT: ["சுப்மன் கில்", "ஸ்ரேயாஸ் ஐயர்", "சூர்யகுமார் யாதவ்", "ருதுராஜ் கெய்க்வாட்"],
+        a: 1,
+        exp: "Captained by Shreyas Iyer, India defeated Pakistan by 19 runs to win the Men's T20 Cricket Gold Medal at the Asian Games 2026."
+    },
+    // 57
+    {
+        qE: "Who captained the Indian Women's Hockey team that defeated China to win the Gold Medal at the Asian Games 2026?",
+        qT: "ஆசிய விளையாட்டுப் போட்டிகள் 2026-இல் சீனாவை வீழ்த்தி தங்கப் பதக்கம் வென்ற இந்திய மகளிர் ஹாக்கி அணியின் கேப்டன் யார்?",
+        oE: ["Lalremsiami", "Salima Tete", "Savita Punia", "Vandana Katariya"],
+        oT: ["லால்ரெம்சியாமி", "சலீமா டெடே", "சவிதா புனியா", "வந்தனா கட்டாரியா"],
+        a: 1,
+        exp: "Captained by Salima Tete, the Indian Women's Hockey team defeated China to win Gold, with Lalremsiami scoring the winning goal."
+    },
+    // 58
+    {
+        qE: "Who became the first Indian woman to win an Asian Games individual Golf Gold medal in 2026?",
+        qT: "2026-இல் ஆசிய விளையாட்டுப் போட்டிகளில் தனிநபர் கோல்ஃப் தங்கப் பதக்கம் வென்ற முதல் இந்தியப் பெண்மணி யார்?",
+        oE: ["Aditi Ashok", "Pranavi Sharath Urs", "Diksha Dagar", "Tvesa Malik"],
+        oT: ["அதிதி அசோக்", "பிரணவி சரத் அர்ஸ்", "தீக்ஷா தாகர்", "த்வேசா மாலிக்"],
+        a: 1,
+        exp: "Pranavi Sharath Urs became the first Indian woman to win an individual Golf Gold medal at the Asian Games."
+    },
+    // 59
+    {
+        qE: "Which sport was India's highest gold-medal contributor at the 2026 Asian Para Games?",
+        qT: "2026 ஆசிய பாரா விளையாட்டுப் போட்டிகளில் இந்தியாவிற்கு அதிக தங்கப் பதக்கங்களைப் பெற்றுத் தந்த விளையாட்டு எது?",
+        oE: ["Para Shooting", "Para Badminton", "Para Athletics", "Para Archery"],
+        oT: ["பாரா துப்பாக்கிச் சுடுதல்", "பாரா பேட்மிண்டன்", "பாரா தடகளம்", "பாரா வில்வித்தை"],
+        a: 2,
+        exp: "Para Athletics was India's highest gold contributor at the 2026 Asian Para Games, winning 22 of India's 30 Gold medals."
+    },
+    // 60
+    {
+        qE: "Who became the youngest female International Master in chess history at the age of 11?",
+        qT: "11 வயதில் செஸ் வரலாற்றில் மிக இளைய பெண் இன்டர்நேஷனல் மாஸ்டராக மாறியவர் யார்?",
+        oE: ["Divya Deshmukh", "Bodhana Sivanandan", "Vaishali Rameshbabu", "Uma Kashvi"],
+        oT: ["திவ்யா தேஷ்முக்", "போதனா சிவானந்தன்", "வைஷாலி ரமேஷ்பாபு", "உமா காஷ்வி"],
+        a: 1,
+        exp: "Indian-origin British prodigy Bodhana Sivanandan became the youngest female International Master in chess history at age 11."
+    },
+    // 61
+    {
+        qE: "Who was appointed as the Governor of Tamil Nadu by President Droupadi Murmu in October 2026?",
+        qT: "அக்டோபர் 2026-இல் குடியரசுத் தலைவர் திரௌபதி முர்முவால் தமிழ்நாட்டின் ஆளுநராக நியமிக்கப்பட்டவர் யார்?",
+        oE: ["Om Prakash Mathur", "Rajendra Vishwanath Arlekar", "Dushyant Gautam", "Braj Mohan Ram"],
+        oT: ["ஓம் பிரகாஷ் மாத்தூர்", "ராஜேந்திர விஸ்வநாத் அர்லேகர்", "துஷ்யந்த் கௌதம்", "பிரஜ் மோகன் ராம்"],
+        a: 1,
+        exp: "Rajendra Vishwanath Arlekar was appointed Governor of Tamil Nadu, while Om Prakash Mathur became Governor of Kerala and Dushyant Gautam became Governor of Sikkim."
+    },
+    // 62
+    {
+        qE: "Which Indian city will host the 2030 Commonwealth Games?",
+        qT: "2030 காமன்வெல்த் விளையாட்டுப் போட்டிகளை எந்த இந்திய நகரம் நடத்தவுள்ளது?",
+        oE: ["New Delhi", "Mumbai", "Ahmedabad", "Bengaluru"],
+        oT: ["புதுடெல்லி", "மும்பை", "அகமதாபாத்", "பெங்களூரு"],
+        a: 2,
+        exp: "Ahmedabad, Gujarat will host the 2030 Commonwealth Games; Saina Nehwal and Rahul Dravid were nominated to its Organising Committee."
+    },
+    // 63
+    {
+        qE: "Which port authority partnered with the International Finance Corporation to develop India's first Blue Finance Shore Power Project?",
+        qT: "இந்தியாவின் முதல் நீல நிதி கடற்கரை மின் திட்டத்தை உருவாக்க சர்வதேச நிதி நிறுவனத்துடன் இணைந்த துறைமுக ஆணையம் எது?",
+        oE: ["Mumbai Port Authority", "Jawaharlal Nehru Port Authority", "Paradip Port Authority", "Deendayal Port Authority"],
+        oT: ["மும்பை துறைமுக ஆணையம்", "ஜவஹர்லால் நேரு துறைமுக ஆணையம்", "பாரதீப் துறைமுக ஆணையம்", "தீனதயாள் துறைமுக ஆணையம்"],
+        a: 1,
+        exp: "Jawaharlal Nehru Port Authority (JNPA), Navi Mumbai partnered with IFC ($70 Million investment) to allow docked ships to use land-based electricity."
+    },
+    // 64
+    {
+        qE: "At which glacial lake in Chamoli district was Uttarakhand's first Glacial Lake Outburst Flood Early Warning System installed?",
+        qT: "சமோலி மாவட்டத்தில் உள்ள எந்தப் பனிப்பாறை ஏரியில் உத்தரகாண்டின் முதல் GLOF முன்னெச்சரிக்கை அமைப்பு நிறுவப்பட்டது?",
+        oE: ["Roopkund", "Vasundhara Tal", "Hemkund", "Satopanth Tal"],
+        oT: ["ரூப்குண்ட்", "வசுந்தரா தால்", "ஹேம்குண்ட்", "சதோபந்த் தால்"],
+        a: 1,
+        exp: "Uttarakhand's first GLOF Early Warning System was installed at Vasundhara Tal in Chamoli district."
+    },
+    // 65
+    {
+        qE: "Which location in Mumbai became India's first Plastic-Free Marine Oil Terminal?",
+        qT: "மும்பையில் உள்ள எந்த இடம் இந்தியாவின் முதல் பிளாஸ்டிக் இல்லாத கடல்சார் எண்ணெய் முனையமாக மாறியது?",
+        oE: ["Elephanta Island", "Jawahar Dweep", "Mazagon Dock", "Sassoon Dock"],
+        oT: ["எலிஃபண்டா தீவு", "ஜவஹர் தீவு", "மசாகன் டாக்", "சாசூன் டாக்"],
+        a: 1,
+        exp: "Jawahar Dweep in Mumbai was declared India's first plastic-free marine oil terminal by the Mumbai Port Authority."
+    },
+    // 66
+    {
+        qE: "In which state is the Barda Wildlife Sanctuary located, where Asiatic Lions recently returned after 144 years?",
+        qT: "144 ஆண்டுகளுக்குப் பிறகு ஆசிய சிங்கங்கள் மீண்டும் திரும்பியுள்ள பர்தா வனவிலங்கு சரணாலயம் எந்த மாநிலத்தில் அமைந்துள்ளது?",
+        oE: ["Rajasthan", "Gujarat", "Madhya Pradesh", "Maharashtra"],
+        oT: ["ராஜஸ்தான்", "குஜராத்", "மத்தியப் பிரதேசம்", "மகாராஷ்டிரா"],
+        a: 1,
+        exp: "Barda Wildlife Sanctuary is located in Gujarat and now hosts a population of 17 Asiatic lions."
+    },
+    // 67
+    {
+        qE: "What is the proposed installed capacity of the Siang Upper Multipurpose Project in Arunachal Pradesh?",
+        qT: "அருணாச்சலப் பிரதேசத்தில் முன்மொழியப்பட்டுள்ள சியாங் மேல் பல்நோக்குத் திட்டத்தின் நிறுவப்பட்ட மின் திறன் எவ்வளவு?",
+        oE: ["5,400 MW", "8,600 MW", "11,200 MW", "14,500 MW"],
+        oT: ["5,400 மெகாவாட்", "8,600 மெகாவாட்", "11,200 மெகாவாட்", "14,500 மெகாவாட்"],
+        a: 2,
+        exp: "The proposed Siang Upper Multipurpose Project on the Siang River in Arunachal Pradesh will have an installed capacity of 11,200 MW (11.2 GW)."
+    },
+    // 68
+    {
+        qE: "In which country was the 153rd Assembly of the Inter-Parliamentary Union held in October 2026?",
+        qT: "அக்டோபர் 2026-இல் சர்வதேச நாடாளுமன்ற ஒன்றியத்தின் 153வது மாநாடு எந்த நாட்டில் நடைபெற்றது?",
+        oE: ["South Africa", "Tanzania", "Kenya", "Germany"],
+        oT: ["தென்னாப்பிரிக்கா", "தான்சானியா", "கென்யா", "ஜெர்மனி"],
+        a: 1,
+        exp: "The 153rd IPU Assembly was held in Tanzania, where Harivansh led the Indian delegation and Milton Dick became the 32nd IPU President."
+    },
+    // 69
+    {
+        qE: "Which Indian Army regiment won the Gold Medal at Exercise Cambrian Patrol 2026 held in Wales, UK?",
+        qT: "இங்கிலாந்தின் வேல்ஸில் நடைபெற்ற கேம்ப்ரியன் ரோந்து பயிற்சி 2026-இல் தங்கப் பதக்கம் வென்ற இந்திய ராணுவப் படைப்பிரிவு எது?",
+        oE: ["Gorkha Rifles", "Assam Regiment", "Madras Regiment", "Sikh Regiment"],
+        oT: ["கூர்க்கா ரைபிள்ஸ்", "அசாம் ரெஜிமென்ட்", "மெட்ராஸ் ரெஜிமென்ட்", "சீக்கிய ரெஜிமென்ட்"],
+        a: 1,
+        exp: "The Assam Regiment of the Indian Army won the Gold Medal at the British Army's Exercise Cambrian Patrol 2026 in Wales."
+    },
+    // 70
+    {
+        qE: "Where was the 2nd edition of the ASEAN-India Maritime Exercise AIME-2026 conducted?",
+        qT: "ஆசியான்-இந்தியா கடற்படைப் பயிற்சியின் 2வது பதிப்பான AIME-2026 எங்கு நடைபெற்றது?",
+        oE: ["Visakhapatnam, India", "Subic Bay, Philippines", "Changi Naval Base, Singapore", "East Java, Indonesia"],
+        oT: ["விசாகப்பட்டினம், இந்தியா", "சுபிக் விரிகுடா, பிலிப்பைன்ஸ்", "சாங்கி கடற்படைத் தளம், சிங்கப்பூர்", "கிழக்கு ஜாவா, இந்தோனேசியா"],
+        a: 1,
+        exp: "AIME-2026 was held at Subic Bay, Philippines, with INS Sahyadri and INS Kulish participating under the theme 'Anchored In Trust, United At Sea'."
+    },
+    // 71
+    {
+        qE: "What is the new approved name of the National Social Assistance Programme announced by the Union Cabinet?",
+        qT: "மத்திய அமைச்சரவையால் அறிவிக்கப்பட்ட தேசிய சமூக உதவித் திட்டத்தின் புதிய அங்கீகரிக்கப்பட்ட பெயர் என்ன?",
+        oE: ["Pradhan Mantri Jan Kalyan Yojana", "Pradhan Mantri Samajik Sahayata Yojana", "Pradhan Mantri Parivar Suraksha Yojana", "Pradhan Mantri Garib Kalyan Yojana"],
+        oT: ["பிரதம மந்திரி ஜன் கல்யாண் யோஜனா", "பிரதம மந்திரி சமாஜிக் சகாயதா யோஜனா", "பிரதம மந்திரி பரிவார் சுரக்ஷா யோஜனா", "பிரதம மந்திரி கரீப் கல்யாண் யோஜனா"],
+        a: 1,
+        exp: "The National Social Assistance Programme, with a 5-year outlay of ₹53,428 Crore, has been renamed Pradhan Mantri Samajik Sahayata Yojana."
+    },
+    // 72
+    {
+        qE: "Who is the present Comptroller and Auditor General of India mentioned alongside the launch of CAG-BHASHINI Anuvaad?",
+        qT: "சிஏஜி-பாஷினி அனுவாத் தொடங்கப்பட்டதோடு குறிப்பிடப்பட்ட இந்தியாவின் தற்போதைய தலைமைக் கணக்குத் தணிக்கையாளர் யார்?",
+        oE: ["Girish Chandra Murmu", "Kundu Sanjay Murthy", "Prakash Rajpurohit", "Narendra Bhooshan"],
+        oT: ["கிரீஷ் சந்திர முர்மு", "குண்டு சஞ்சய் மூர்த்தி", "பிரகாஷ் ராஜ்புரோஹித்", "நரேந்திர பூஷன்"],
+        a: 1,
+        exp: "Kundu Sanjay Murthy is the present CAG of India. CAG-BHASHINI Anuvaad enables AI-powered multilingual translation of official documents."
+    },
+    // 73
+    {
+        qE: "Which Union Territory was declared fully literate under the ULLAS scheme in October 2026?",
+        qT: "அக்டோபர் 2026-இல் உல்லாஸ் திட்டத்தின் கீழ் முழு எழுத்தறிவு பெற்றதாக அறிவிக்கப்பட்ட யூனியன் பிரதேசம் எது?",
+        oE: ["Ladakh", "Chandigarh", "Lakshadweep", "Jammu and Kashmir"],
+        oT: ["லடாக்", "சண்டிகர்", "லட்சத்தீவு", "ஜம்மு மற்றும் காஷ்மீர்"],
+        a: 2,
+        exp: "Lakshadweep was declared fully literate under ULLAS in October 2026, joining Ladakh, Chandigarh, Andaman and Nicobar Islands, and Jammu and Kashmir."
+    },
+    // 74
+    {
+        qE: "Which private defence company developed JWALA-MK1, India's first indigenous private-sector micro-missile system?",
+        qT: "இந்தியாவின் முதல் உள்நாட்டு தனியார் துறை நுண்-ஏவுகணை அமைப்பான ஜ்வாலா-எம்கே1-ஐ உருவாக்கிய நிறுவனம் எது?",
+        oE: ["Solar Defence", "IG Defence", "Larsen and Toubro", "Tata Advanced Systems"],
+        oT: ["சோலார் டிஃபென்ஸ்", "ஐஜி டிஃபென்ஸ்", "லார்சன் அண்ட் டூப்ரோ", "டாடா அட்வான்ஸ்டு சிஸ்டம்ஸ்"],
+        a: 1,
+        exp: "IG Defence developed JWALA-MK1, a short-range surface-to-air missile with a 2–5 km range designed to destroy drones and UAVs."
+    },
+    // 75
+    {
+        qE: "What was the theme of the 94th Indian Air Force Day celebrated on 8 October 2026?",
+        qT: "அக்டோபர் 8, 2026 அன்று கொண்டாடப்பட்ட 94வது இந்திய விமானப்படை தினத்தின் கருப்பொருள் என்ன?",
+        oE: ["Touch the Sky with Glory", "Indian Air Force – Infallible, Impervious and Precise", "Stronger Together in the Sky", "Atmanirbhar Skies"],
+        oT: ["பெருமையுடன் வானைத் தொடுவோம்", "இந்திய விமானப்படை – தவறாதது, ஊடுருவ முடியாதது மற்றும் துல்லியமானது", "வானில் ஒன்றாக வலிமை பெறுவோம்", "தற்சார்பு வானம்"],
+        a: 1,
+        exp: "The 94th Indian Air Force Day on 8 October 2026 carried the theme 'Indian Air Force – Infallible, Impervious and Precise'."
+    },
+    // 76
+    {
+        qE: "How many Centres of Excellence for Classical Languages were approved by the Ministry of Education in October 2026?",
+        qT: "அக்டோபர் 2026-இல் மத்திய கல்வி அமைச்சகத்தால் செம்மொழிகளுக்காக எத்தனை சிறப்பு மையங்களுக்கு ஒப்புதல் அளிக்கப்பட்டது?",
+        oE: ["3", "4", "5", "6"],
+        oT: ["3", "4", "5", "6"],
+        a: 2,
+        exp: "Five Centres of Excellence were approved for Classical Assamese, Bengali, Marathi, Pali, and Prakrit."
+    },
+    // 77
+    {
+        qE: "Which Indian state is planning to launch 'Co-Keralam', India's first cooperative sector airline?",
+        qT: "இந்தியாவின் முதல் கூட்டுறவுத் துறை விமான நிறுவனமான 'கோ-கேரளம்' நிறுவனத்தை எந்த மாநிலம் தொடங்கத் திட்டமிட்டுள்ளது?",
+        oE: ["Karnataka", "Kerala", "Tamil Nadu", "Maharashtra"],
+        oT: ["கர்நாடகா", "கேரளா", "தமிழ்நாடு", "மகாராஷ்டிரா"],
+        a: 1,
+        exp: "Kerala is planning to launch India's first cooperative sector airline named Co-Keralam through the Kerala Civil Aviation Development Cooperative Society Ltd."
+    },
+    // 78
+    {
+        qE: "Which NABARD subsidiary issued India's first WASH-focused Social Bond raising ₹180 Crore?",
+        qT: "₹180 கோடி திரட்டும் இந்தியாவின் முதல் WASH மையப்படுத்தப்பட்ட சமூகப் பத்திரத்தை வெளியிட்ட நபார்டு துணை நிறுவனம் எது?",
+        oE: ["NABFINS Limited", "NABKISAN Finance Limited", "NABSAMRUDDHI Finance", "NABVENTURES Limited"],
+        oT: ["நாப்ஃபின்ஸ் லிமிடெட்", "நாப்கிசான் பைனான்ஸ் லிமிடெட்", "நாப்சம்ருத்தி பைனான்ஸ்", "நாப்வென்ச்சர்ஸ் லிமிடெட்"],
+        a: 1,
+        exp: "NABKISAN Finance Limited issued India's first Water, Sanitation, and Hygiene (WASH)-focused Social Bond listed on the NSE."
+    },
+    // 79
+    {
+        qE: "Which product was transported from Bogibeel Terminal in Dibrugarh to Bangladesh in the first international cargo shipment via National Waterway-2?",
+        qT: "தேசிய நீர்வழிப்பாதை-2 வழியாக திப்ருகாரின் போகிபீல் முனையத்திலிருந்து வங்காளதேசத்திற்கு அனுப்பப்பட்ட முதல் சர்வதேச சரக்குப் பொருள் எது?",
+        oE: ["Coal", "Methanol", "Rice", "Cement"],
+        oT: ["நிலக்கரி", "மெத்தனால்", "அரிசி", "சிமெண்ட்"],
+        a: 1,
+        exp: "540 metric tonnes of Methanol were transported from Bogibeel Terminal, Dibrugarh to Bangladesh via the Brahmaputra River (NW-2)."
+    },
+    // 80
+    {
+        qE: "Which bank became Apple Pay's first banking partner in India?",
+        qT: "இந்தியாவில் ஆப்பிள் பே நிறுவனத்தின் முதல் வங்கிப் பங்குதாரராக மாறிய வங்கி எது?",
+        oE: ["HDFC Bank", "Axis Bank", "State Bank of India", "Kotak Mahindra Bank"],
+        oT: ["எச்டிஎஃப்சி வங்கி", "ஆக்சிஸ் வங்கி", "பாரத ஸ்டேட் வங்கி", "கோடக் மஹிந்திரா வங்கி"],
+        a: 1,
+        exp: "Axis Bank became Apple Pay's first banking partner in India."
+    },
+
+    // ================= 20 STATEMENT-BASED QUESTIONS (Q81 - Q100) =================
+    // 81 (Ans: 0 - Only 1)
+    {
+        qE: "Consider the following statements:\n1. India's score in the Global Hunger Index 2026 is 24.1, placing it in the Serious category.\n2. Norway secured the first position in the World Justice Project Rule of Law Index 2026.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. உலகளாவிய பசி குறியீடு 2026-இல் இந்தியாவின் மதிப்பெண் 24.1 ஆகும், இது கடுமையான பிரிவில் உள்ளது.\n2. உலக நீதித் திட்டத்தின் சட்டத்தின் ஆட்சி குறியீடு 2026-இல் நார்வே முதலிடம் பிடித்தது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 0,
+        exp: "Statement 1 is correct. Statement 2 is incorrect because Denmark topped the Rule of Law Index 2026, while Norway ranked second."
+    },
+    // 82 (Ans: 1 - Only 2)
+    {
+        qE: "Consider the following statements:\n1. The First BIMSTEC Home Ministers' Meeting adopted the Dhaka Declaration.\n2. The headquarters of BIMSTEC is located in Dhaka, Bangladesh.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. முதல் பிம்ஸ்டெக் உள்துறை அமைச்சர்கள் மாநாடு டாக்கா பிரகடனத்தை ஏற்றுக்கொண்டது.\n2. பிம்ஸ்டெக் அமைப்பின் தலைமையகம் வங்காளதேசத்தின் டாக்காவில் அமைந்துள்ளது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 1,
+        exp: "Statement 1 is incorrect because the meeting adopted the Delhi Declaration. Statement 2 is correct."
+    },
+    // 83 (Ans: 2 - Both 1 and 2)
+    {
+        qE: "Consider the following statements:\n1. Bihar Museum ranked 9th globally and 1st in Asia in the World's 100 Best Museums 2026 list.\n2. The 10th India Mobile Congress 2026 was held at Yashobhoomi in New Delhi.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. உலகின் 100 சிறந்த அருங்காட்சியகங்கள் 2026 பட்டியலில் பீகார் அருங்காட்சியகம் உலகளவில் 9வது இடத்தையும் ஆசியாவில் 1வது இடத்தையும் பிடித்தது.\n2. 10வது இந்திய மொபைல் மாநாடு 2026 புதுடெல்லியின் யஷோபூமியில் நடைபெற்றது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 2,
+        exp: "Both statements are correct. Bihar Museum secured 9th place worldwide, and the 10th IMC 2026 was held at Yashobhoomi, New Delhi."
+    },
+    // 84 (Ans: 3 - Neither 1 nor 2)
+    {
+        qE: "Consider the following statements:\n1. Sikkim became India's first 100% Organic Union Territory.\n2. Uttar Pradesh has the maximum number of Ramsar Sites among all Indian states.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. சிக்கிம் இந்தியாவின் முதல் 100% இயற்கை விவசாய யூனியன் பிரதேசமாக மாறியது.\n2. இந்திய மாநிலங்களில் அதிக எண்ணிக்கையிலான ராம்சர் தளங்களை உத்தரப் பிரதேசம் கொண்டுள்ளது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 3,
+        exp: "Both statements are incorrect. Sikkim is the first Organic State (Ladakh is the first Organic UT), and Tamil Nadu has the maximum Ramsar sites (20), while Uttar Pradesh is second (14)."
+    },
+    // 85 (Ans: 0 - Only 1)
+    {
+        qE: "Consider the following statements:\n1. The Pradhan Mantri Viksit Gram Swaraj Yojana is implemented by the Ministry of Panchayati Raj from 2026-27 to 2030-31.\n2. ISRO placed the NVS-03 navigation satellite into Low Earth Orbit.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. பிரதம மந்திரி விக்சித் கிராம் சுயராஜ் யோஜனா 2026-27 முதல் 2030-31 வரை பஞ்சாயத்து ராஜ் அமைச்சகத்தால் செயல்படுத்தப்படுகிறது.\n2. இஸ்ரோ NVS-03 வழிகாட்டுதல் செயற்கைக்கோளை தாழ் புவி சுற்றுப்பாதையில் நிலைநிறுத்தியது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 0,
+        exp: "Statement 1 is correct. Statement 2 is incorrect because NVS-03 was placed into Geosynchronous Orbit at 35,786 km from Earth."
+    },
+    // 86 (Ans: 1 - Only 2)
+    {
+        qE: "Consider the following statements:\n1. Under the IDBI Bank disinvestment deal, Fairfax Financial is acquiring a 49% stake.\n2. The PM Dhan-Dhaanya Krishi Yojana covers 100 agricultural districts across India.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. ஐடிபிஐ வங்கி பங்கு விற்பனை ஒப்பந்தத்தின் கீழ் ஃபேர்ஃபாக்ஸ் பைனான்சியல் 49% பங்குகளைக் கையகப்படுத்துகிறது.\n2. பிஎம் தன்-தான்ய கிருஷி யோஜனா இந்தியா முழுவதும் 100 வேளாண் மாவட்டங்களை உள்ளடக்கியது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 1,
+        exp: "Statement 1 is incorrect because Fairfax Financial is acquiring a 60.72% stake (30.48% from GoI and 30.24% from LIC). Statement 2 is correct."
+    },
+    // 87 (Ans: 2 - Both 1 and 2)
+    {
+        qE: "Consider the following statements:\n1. Henri B. Kagan and Kenso Soai won the 2026 Nobel Prize in Chemistry.\n2. Robert E. Hall and Michael Woodford won the 2026 Sveriges Riksbank Prize in Economic Sciences.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. ஹென்றி பி. காகன் மற்றும் கென்சோ சோய் ஆகியோர் 2026 வேதியியலுக்கான நோபல் பரிசை வென்றனர்.\n2. ராபர்ட் இ. ஹால் மற்றும் மைக்கேல் வுட்ஃபோர்ட் ஆகியோர் 2026 பொருளாதார அறிவியலுக்கான நோபல் பரிசை வென்றனர்.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 2,
+        exp: "Both statements are correct regarding the 2026 Nobel Prize laureates in Chemistry and Economic Sciences."
+    },
+    // 88 (Ans: 3 - Neither 1 nor 2)
+    {
+        qE: "Consider the following statements:\n1. Lovlina Borgohain became the first Indian woman boxer to win an Asian Games Gold medal.\n2. India won 25 Gold medals at the 20th Asian Games 2026.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. ஆசிய விளையாட்டுப் போட்டிகளில் தங்கப் பதக்கம் வென்ற முதல் இந்தியப் பெண் குத்துச்சண்டை வீராங்கனை லவ்லினா போர்கோஹைன் ஆவார்.\n2. 20வது ஆசிய விளையாட்டுப் போட்டிகள் 2026-இல் இந்தியா 25 தங்கப் பதக்கங்களை வென்றது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 3,
+        exp: "Both statements are incorrect. Lovlina Borgohain is the 2nd Indian woman boxer to win Asian Games Gold after M. C. Mary Kom, and India won 21 Gold medals (85 total) at the 2026 Asian Games."
+    },
+    // 89 (Ans: 0 - Only 1)
+    {
+        qE: "Consider the following statements:\n1. Kumkum Mohod became the first Indian archer to win an Asian Games individual recurve gold medal.\n2. India finished third overall in the 2026 Asian Para Games medal tally.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. ஆசிய விளையாட்டுப் போட்டிகளில் தனிநபர் ரிகர்வ் வில்வித்தையில் தங்கப் பதக்கம் வென்ற முதல் இந்திய வில்வித்தை வீராங்கனை கும்கும் மொஹோத் ஆவார்.\n2. 2026 ஆசிய பாரா விளையாட்டுப் போட்டிகளின் பதக்கப் பட்டியலில் இந்தியா ஒட்டுமொத்தமாக மூன்றாவது இடத்தைப் பிடித்தது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 0,
+        exp: "Statement 1 is correct. Statement 2 is incorrect because India finished 4th at the 2026 Asian Para Games behind China, Japan, and Uzbekistan."
+    },
+    // 90 (Ans: 1 - Only 2)
+    {
+        qE: "Consider the following statements:\n1. Avani Lekhara won the Gold Medal in Women's 10m Air Rifle at the Asian Para Games 2026.\n2. Putul Sonowal won India's first-ever medal at the World Bowls Champion of Champions 2026.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. ஆசிய பாரா விளையாட்டுப் போட்டிகள் 2026-இல் மகளிர் 10 மீட்டர் ஏர் ரைபிள் பிரிவில் அவனி லெகாரா தங்கப் பதக்கம் வென்றார்.\n2. 2026 உலக பௌல்ஸ் சாம்பியன் ஆஃப் சாம்பியன்ஸ் போட்டியில் இந்தியாவின் முதல் பதக்கத்தை புடுல் சோனோவால் வென்றார்.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 1,
+        exp: "Statement 1 is incorrect because Avani Lekhara won the Silver medal (Mona Agarwal won Gold). Statement 2 is correct."
+    },
+    // 91 (Ans: 2 - Both 1 and 2)
+    {
+        qE: "Consider the following statements:\n1. All four Tiger Reserves of Assam—Kaziranga, Manas, Orang, and Nameri—have received CA|TS-Approved status.\n2. According to the WWF Living Planet Report 2026, monitored wildlife populations declined by an average of 73%.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. அசாமின் நான்கு புலிகள் காப்பகங்களான காசிரங்கா, மனாஸ், ஓராங் மற்றும் நமேரி ஆகிய அனைத்தும் CA|TS அங்கீகாரத்தைப் பெற்றுள்ளன.\n2. WWF வாழும் கிரக அறிக்கை 2026-இன் படி, கண்காணிக்கப்பட்ட வனவிலங்குகளின் எண்ணிக்கை சராசரியாக 73% குறைந்துள்ளது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 2,
+        exp: "Both statements are correct."
+    },
+    // 92 (Ans: 3 - Neither 1 nor 2)
+    {
+        qE: "Consider the following statements:\n1. The 7th Agrivoltaics World Conference 2026 was hosted by Germany in Berlin.\n2. The World Health Summit 2026 was organised in Cape Town, South Africa.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. 7வது அக்ரிவோல்டாயிக்ஸ் உலக மாநாடு 2026 ஜெர்மனியின் பெர்லினில் நடத்தப்பட்டது.\n2. உலக சுகாதார உச்சி மாநாடு 2026 தென்னாப்பிரிக்காவின் கேப் டவுனில் நடைபெற்றது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 3,
+        exp: "Both statements are incorrect. The 7th Agrivoltaics World Conference 2026 was hosted by India in New Delhi, and the World Health Summit 2026 was held in Berlin, Germany (Cape Town hosted the 69th Commonwealth Parliamentary Conference)."
+    },
+    // 93 (Ans: 0 - Only 1)
+    {
+        qE: "Consider the following statements:\n1. Exercise IBSAMAR 2026 is a trilateral maritime exercise conducted among India, Brazil, and South Africa.\n2. The 33rd edition of Exercise SIMBEX-26 was hosted in Singapore.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. இப்சாமார் 2026 பயிற்சி இந்தியா, பிரேசில் மற்றும் தென்னாப்பிரிக்கா ஆகிய நாடுகளுக்கு இடையே நடத்தப்படும் முத்தரப்பு கடற்படைப் பயிற்சியாகும்.\n2. சிம்பெக்ஸ்-26 பயிற்சியின் 33வது பதிப்பு சிங்கப்பூரில் நடத்தப்பட்டது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 0,
+        exp: "Statement 1 is correct (9th edition held at Simon's Town, South Africa). Statement 2 is incorrect because SIMBEX-26 was held in Visakhapatnam, Andhra Pradesh."
+    },
+    // 94 (Ans: 1 - Only 2)
+    {
+        qE: "Consider the following statements:\n1. Mountain Guardian 2026 is a joint military exercise between India and Japan.\n2. Exercise AUSTRAHIND 2026 was conducted in Thiruvananthapuram, Kerala.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. மவுண்டன் கார்டியன் 2026 என்பது இந்தியா மற்றும் ஜப்பான் இடையேயான கூட்டு ராணுவப் பயிற்சியாகும்.\n2. ஆஸ்ட்ராஹிந்த் 2026 பயிற்சி கேரளாவின் திருவனந்தபுரத்தில் நடைபெற்றது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 1,
+        exp: "Statement 1 is incorrect because Mountain Guardian 2026 is a joint exercise between India and the UAE held in Chaubatia, Uttarakhand. Statement 2 is correct."
+    },
+    // 95 (Ans: 2 - Both 1 and 2)
+    {
+        qE: "Consider the following statements:\n1. The Khelo India Sports Goods Manufacturing Scheme has a total outlay of ₹1,856.67 Crore.\n2. The PM E-DRIVE scheme implemented by the Ministry of Heavy Industries has been extended up to 31 March 2028.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. கேலோ இந்தியா விளையாட்டுப் பொருட்கள் உற்பத்தித் திட்டம் ₹1,856.67 கோடி மொத்த ஒதுக்கீட்டைக் கொண்டுள்ளது.\n2. கனரகத் தொழில்துறை அமைச்சகத்தால் செயல்படுத்தப்படும் பிஎம் இ-டிரைவ் திட்டம் மார்ச் 31, 2028 வரை நீட்டிக்கப்பட்டுள்ளது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 2,
+        exp: "Both statements are correct."
+    },
+    // 96 (Ans: 3 - Neither 1 nor 2)
+    {
+        qE: "Consider the following statements:\n1. INS Mangrol was built by Garden Reach Shipbuilders and Engineers in Kolkata.\n2. The Vettri Payanam Scheme for free bus travel was launched by the Government of West Bengal.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. ஐஎன்எஸ் மங்க்ரோல் கொல்கத்தாவின் கார்டன் ரீச் ஷிப்பீல்டர்ஸ் அண்ட் இன்ஜினியர்ஸ் நிறுவனத்தால் கட்டப்பட்டது.\n2. இலவச பேருந்து பயணத்திற்கான வெற்றிப் பயணம் திட்டம் மேற்கு வங்க அரசால் தொடங்கப்பட்டது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 3,
+        exp: "Both statements are incorrect. INS Mangrol was built by Cochin Shipyard (GRSE launched 'Shreyas'), and Vettri Payanam was launched by Tamil Nadu (West Bengal approved the Bhagini Nivedita Scheme)."
+    },
+    // 97 (Ans: 0 - Only 1)
+    {
+        qE: "Consider the following statements:\n1. The Sirpur Cultural and Archaeological Landscape of Chhattisgarh was recently added to the UNESCO World Heritage Tentative List.\n2. The Shinzo Abe Memorial Corridor was inaugurated in Ahmedabad, Gujarat.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. சத்தீஸ்கரின் சிர்பூர் கலாச்சார மற்றும் தொல்லியல் நிலப்பரப்பு சமீபத்தில் யுனெஸ்கோ உலகப் பாரம்பரிய தற்காலிகப் பட்டியலில் சேர்க்கப்பட்டது.\n2. ஷின்சோ அபே நினைவு வழித்தடம் குஜராத்தின் அகமதாபாத்தில் திறக்கப்பட்டது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 0,
+        exp: "Statement 1 is correct (along with Baratang Mud-Volcanoes and Andaman Subduction Volcanoes). Statement 2 is incorrect because the Shinzo Abe Memorial Corridor was inaugurated in Varanasi, UP."
+    },
+    // 98 (Ans: 1 - Only 2)
+    {
+        qE: "Consider the following statements:\n1. The 'Samajh Se Investing Simple' campaign was launched by the Reserve Bank of India.\n2. The RBI approved the merger of Emirates NBD's Indian branches with RBL Bank.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. 'சமஜ் சே இன்வெஸ்டிங் சிம்பிள்' பிரச்சாரம் இந்திய ரிசர்வ் வங்கியால் தொடங்கப்பட்டது.\n2. எமிரேட்ஸ் என்.பி.டி வங்கியின் இந்தியக் கிளைகளை ஆர்பிஎல் வங்கியுடன் இணைக்க ஆர்பிஐ ஒப்புதல் அளித்துள்ளது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 1,
+        exp: "Statement 1 is incorrect because 'Samajh Se Investing Simple' was launched by SEBI under Project Jagrook. Statement 2 is correct."
+    },
+    // 99 (Ans: 2 - Both 1 and 2)
+    {
+        qE: "Consider the following statements:\n1. Late maestro Guruvayur Dorai was associated with the Mridangam, while Roshan Kumari was associated with Kathak.\n2. The Punah Bharan Mobile Application was launched by the Ministry of Jal Shakti to identify suitable places for groundwater recharge.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. மறைந்த கலைஞர் குருவாயூர் துரை மிருதங்கத்துடனும், ரோஷன் குமாரி கதக் நடனத்துடனும் தொடர்புடையவர்கள்.\n2. நிலத்தடி நீர் செறிவூட்டலுக்கு ஏற்ற இடங்களைக் கண்டறிய மத்திய ஜல் சக்தி அமைச்சகத்தால் புனஹ் பரன் செயலி தொடங்கப்பட்டது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 2,
+        exp: "Both statements are correct. Punah Bharan was launched by Union Minister C. R. Paatil and developed by BISAG-N."
+    },
+    // 100 (Ans: 3 - Neither 1 nor 2)
+    {
+        qE: "Consider the following statements:\n1. Sankoo has become the 6th district of the Union Territory of Ladakh.\n2. The World Bank projected India's GDP growth rate for FY 2026-27 at 6.5%.",
+        qT: "பின்வரும் கூற்றுகளைக் கவனியுங்கள்:\n1. சன்கூ லடாக் யூனியன் பிரதேசத்தின் 6வது மாவட்டமாக மாறியுள்ளது.\n2. உலக வங்கி 2026-27 நிதியாண்டிற்கான இந்தியாவின் மொத்த உள்நாட்டு உற்பத்தி வளர்ச்சியை 6.5% எனக் கணித்துள்ளது.",
+        oE: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"],
+        oT: ["1 மட்டும்", "2 மட்டும்", "1 மற்றும் 2 இரண்டும்", "1 மற்றும் 2 இரண்டும் இல்லை"],
+        a: 3,
+        exp: "Both statements are incorrect. Sankoo became the 8th district of Ladakh, and the World Bank forecast India's FY 2026-27 GDP growth at 7.1%."
+    }
+];
+let quizData = [];
+let currentQ = 0;
+let answers = [];
+let status = []; // 0: Not Visited, 1: Not Answered, 2: Answered, 3: Marked, 4: Answered & Marked
+
+// Shuffle array algorithm
+function shuffleArray(array) {
+    let shuffled = array.slice();
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+// Switch Views
+function switchView(viewId) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(viewId).classList.add('active');
+}
+
+function startQuiz() {
+    quizData = shuffleArray(baseQuizData);
+   answers = new Array(quizData.length).fill(null);
+   status = new Array(quizData.length).fill(0);
+    
+    switchView('view-quiz');
+    
+    buildPalette();
+    loadQuestion(0);
+    startTimer();
+    
+    if(window.innerWidth <= 768) {
+        document.getElementById('close-palette-btn').style.display = 'block';
+    }
+}
+
+function buildPalette() {
+    const grid = document.getElementById('palette-grid');
+    grid.innerHTML = '';
+    for(let i=0; i<quizData.length; i++) {
+        let bubble = document.createElement('div');
+        bubble.className = 'q-bubble status-' + status[i];
+        bubble.innerText = (i+1);
+        bubble.id = 'pb-' + i;
+        bubble.onclick = () => jumpToQuestion(i);
+        grid.appendChild(bubble);
+    }
+}
+
+function syncAnswer() {
+    let selected = document.querySelector('input[name="opt"]:checked');
+    if(selected) {
+        answers[currentQ] = parseInt(selected.value);
+    } else {
+        answers[currentQ] = null;
+    }
+}
+
+function updatePaletteCSS() {
+    for(let i=0; i<quizData.length; i++) {
+        let bubble = document.getElementById('pb-' + i);
+        bubble.className = 'q-bubble status-' + status[i];
+        if(i === currentQ) bubble.classList.add('active');
+    }
+}
+
+function loadQuestion(index) {
+    if(status[currentQ] === 0) {
+        status[currentQ] = (answers[currentQ] !== null) ? 2 : 1;
+    }
+    
+    currentQ = index;
+    if(status[currentQ] === 0) status[currentQ] = 1;
+
+    document.getElementById('q-no').innerText = "Question " + (currentQ + 1);
+    
+    // Format statement questions with line breaks
+    let qTextEn = quizData[currentQ].qE.replace(/\n/g, "<br>");
+    let qTextTa = quizData[currentQ].qT.replace(/\n/g, "<br>");
+    
+    document.getElementById('q-text-en').innerHTML = qTextEn;
+    document.getElementById('q-text-ta').innerHTML = qTextTa;
+
+    let optHtml = '';
+    for(let i=0; i<4; i++) {
+        let checked = (answers[currentQ] === i) ? 'checked' : '';
+        optHtml += `
+            <label class="option-label">
+                <input type="radio" name="opt" value="${i}" ${checked} onchange="syncAnswer()">
+                <div>
+                    <div>${quizData[currentQ].oE[i]}</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">${quizData[currentQ].oT[i]}</div>
+                </div>
+            </label>
+        `;
+    }
+    document.getElementById('options-container').innerHTML = optHtml;
+    
+    // Clear scroll position to top of container when moving to a new question
+    document.querySelector('.question-scroll-area').scrollTop = 0;
+    
+    updatePaletteCSS();
+}
+
+function jumpToQuestion(i) {
+    syncAnswer();
+    loadQuestion(i);
+    if(window.innerWidth <= 768) togglePalette();
+}
+
+function saveAndNext() {
+    syncAnswer();
+    status[currentQ] = (answers[currentQ] !== null) ? 2 : 1;
+    if(currentQ < quizData.length - 1) loadQuestion(currentQ + 1);
+    else updatePaletteCSS();
+}
+
+function markAndNext() {
+    syncAnswer();
+    status[currentQ] = (answers[currentQ] !== null) ? 4 : 3;
+    if(currentQ < quizData.length - 1) loadQuestion(currentQ + 1);
+    else updatePaletteCSS();
+}
+
+function clearResponse() {
+    answers[currentQ] = null;
+    status[currentQ] = 1;
+    loadQuestion(currentQ);
+}
+
+function prevQuestion() {
+    syncAnswer();
+    if(currentQ > 0) loadQuestion(currentQ - 1);
+}
+
+function togglePalette() {
+    document.getElementById('palette').classList.toggle('open');
+}
+
+// Timer Logic
+let timeLimit = 30 * 60; // 15 mins
+let timerInterval;
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLimit--;
+        let m = Math.floor(timeLimit / 60).toString().padStart(2, '0');
+        let s = (timeLimit % 60).toString().padStart(2, '0');
+        document.getElementById('timer').innerText = m + ':' + s;
+        if(timeLimit <= 0) {
+            clearInterval(timerInterval);
+            submitExam();
+        }
+    }, 1000);
+}
+
+// Custom Submit Modals
+function showSubmitConfirm() {
+    syncAnswer();
+    let unattempted = answers.filter(a => a === null).length;
+    let warningTxt = document.getElementById('unanswered-warning');
+    if(unattempted > 0) {
+        warningTxt.innerText = `You have ${unattempted} unattempted questions!`;
+        warningTxt.style.display = 'block';
+    } else {
+        warningTxt.style.display = 'none';
+    }
+    document.getElementById('confirm-modal').style.display = 'flex';
+}
+
+function closeSubmitConfirm() {
+    document.getElementById('confirm-modal').style.display = 'none';
+}
+
+function submitExam() {
+    clearInterval(timerInterval);
+    document.getElementById('confirm-modal').style.display = 'none';
+    syncAnswer();
+    
+    let correct = 0, wrong = 0, unattempted = 0;
+    
+    quizData.forEach((q, i) => {
+        if(answers[i] === null) unattempted++;
+        else if(answers[i] === q.a) correct++;
+        else wrong++;
+    });
+    
+    let score = correct - (wrong * 0.3333);
+    
+    document.getElementById('res-score').innerText = score.toFixed(2);
+    document.getElementById('res-correct').innerText = correct;
+    document.getElementById('res-wrong').innerText = wrong;
+    document.getElementById('res-unattempted').innerText = unattempted;
+    document.getElementById('out-of-text').innerText = `(Out of ${quizData.length})`;
+    switchView('view-results');
+}
+
+// Detailed Review with Tabs
+function showDetailedReview() {
+    let htmlCorrect = '';
+    let htmlWrong = '';
+    let htmlUnattempted = '';
+    
+    quizData.forEach((q, i) => {
+        let isAttempted = answers[i] !== null;
+        let isCorrect = isAttempted && answers[i] === q.a;
+        let cssClass = !isAttempted ? 'unattempted' : (isCorrect ? 'correct' : 'wrong');
+        
+        let chosenText = isAttempted ? q.oE[answers[i]] : "None";
+        let correctText = q.oE[q.a];
+        
+        let qText = q.qE.replace(/\n/g, "<br>");
+        let tagHtml = !isAttempted ? `<span class="answer-tag tag-unattempted">Unattempted</span>` : 
+                      isCorrect ? `<span class="answer-tag tag-correct">Correct (+1.0)</span>` : 
+                      `<span class="answer-tag tag-wrong">Incorrect (-0.33)</span>`;
+                      
+        let explanationText = q.exp || `The correct answer is ${correctText}.`;
+        
+        let itemHtml = `
+            <div class="review-item ${cssClass}">
+                <strong style="font-size: 1.1rem; color: #fff;">Q${i+1}: ${qText}</strong><br>
+                ${tagHtml}
+                <div style="margin-top: 15px; font-size: 0.95rem; display: grid; gap: 8px;">
+                    <div><span style="color: var(--text-secondary)">Your Answer:</span> <span style="color: ${!isAttempted ? '#9e9e9e' : isCorrect ? 'var(--color-answered)' : 'var(--color-not-answered)'}">${chosenText}</span></div>
+                    <div><span style="color: var(--text-secondary)">Correct Answer:</span> <span style="color: var(--color-answered); font-weight: bold;">${correctText}</span></div>
+                </div>
+                <div class="explanation-box">
+                    <strong style="color: var(--primary-cyan);">Explanation:</strong><br>
+                    ${explanationText}
+                </div>
+            </div>
+        `;
+        
+        if (!isAttempted) htmlUnattempted += itemHtml;
+        else if (isCorrect) htmlCorrect += itemHtml;
+        else htmlWrong += itemHtml;
+    });
+    
+    // Inject Content
+    document.getElementById('review-content-correct').innerHTML = htmlCorrect || "<div style='text-align:center; padding: 30px; color: var(--text-secondary);'>No correct answers recorded in this session.</div>";
+    document.getElementById('review-content-wrong').innerHTML = htmlWrong || "<div style='text-align:center; padding: 30px; color: var(--color-answered); font-weight: bold;'>Amazing job! You had no incorrect answers!</div>";
+    document.getElementById('review-content-unattempted').innerHTML = htmlUnattempted || "<div style='text-align:center; padding: 30px; color: var(--text-secondary);'>You attempted every single question. Great effort!</div>";
+    
+    // Setup Tab counts
+    document.getElementById('tab-count-correct').innerText = document.getElementById('res-correct').innerText;
+    document.getElementById('tab-count-wrong').innerText = document.getElementById('res-wrong').innerText;
+    document.getElementById('tab-count-unattempted').innerText = document.getElementById('res-unattempted').innerText;
+    
+    // Display Section
+    document.getElementById('post-exam-actions').style.display = 'none';
+    document.getElementById('detailed-review-section').style.display = 'block';
+    
+    // Default to the first tab that has data
+    if (htmlWrong) switchTab('wrong');
+    else if (htmlCorrect) switchTab('correct');
+    else switchTab('unattempted');
+}
+
+function switchTab(tabId) {
+    // Reset buttons and content visibility
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    
+    // Activate chosen tab
+    document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+    document.getElementById(`review-content-${tabId}`).classList.add('active');
+}
+</script>
+</body>
+</html>
